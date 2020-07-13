@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "393500520377",
+    "firebase_url": "https://different-dc181.firebaseio.com",
+    "project_id": "different-dc181",
+    "storage_bucket": "different-dc181.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393500520377:android:8413ba2def605ab463d068",
+        "android_client_info": {
+          "package_name": "different.db"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393500520377-dsar2tohh87a8rq9at939d5n02b29ia2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuBid__p_qM9Tw73z8e_RYRKTvzbiQYSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393500520377-dsar2tohh87a8rq9at939d5n02b29ia2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
