@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#FFCE40</color>
+    <color name="etoos">#76BBB6</color>
+    <color name="etoos_b">#103B38</color>
+
+
+    <color name="UnCct">#508BE0</color>
+    <color name="Cct">#C1E6FF</color>
+    <color name="peace">#B4B4B4</color>
+    <color name="joy">#F7CD7C</color>
+    <color name="angry">#E77474</color>
+</resources>
