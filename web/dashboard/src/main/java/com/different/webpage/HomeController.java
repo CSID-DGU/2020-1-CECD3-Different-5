@@ -1,4 +1,4 @@
-package com.different.web;
+package com.different.webpage;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -33,16 +33,28 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "login";
+		return "home";
 	}*/
+	
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "login";
 	}
 	
+	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String search() {
 		return "search";
+	}
+	
+	@RequestMapping(value = "/student", method = RequestMethod.GET)
+	public String student() {
+		return "student";
+	}
+	
+	@RequestMapping(value = "/detail", method = RequestMethod.GET)
+	public String detail() {
+		return "detail";
 	}
 }

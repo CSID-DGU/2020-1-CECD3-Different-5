@@ -13,7 +13,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>search</title>
+  <title>SB Admin 2 - Charts</title>
 
   <!-- Custom fonts for this template-->
   <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -76,18 +76,16 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 
-       <!-- Main Content -->
+      <!-- Main Content -->
       <div id="content">
 
         <!-- Topbar -->
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
           <!-- Sidebar Toggle (Topbar) -->
-          <form class="form-inline">
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-              <i class="fa fa-bars"></i>
-            </button>
-          </form>
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
 
           <!-- Topbar Search -->
           <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
@@ -268,51 +266,59 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">
-          	<i class="fas fa-fw fa-user-circle"></i>
-          	학생 목록
-          </h1>
+          <h1 class="h3 mb-2 text-gray-800">학생 이름</h1>
+          <p class="mb-4">Chart.js is a third party plugin that is used to generate the charts in this theme. The charts below have been customized - for further customization options, please visit the <a target="_blank" href="https://www.chartjs.org/docs/latest/">official Chart.js documentation</a>.</p>
 
-          <!-- DataTales Example -->
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-            	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDetail" aria-expanded="true" aria-controls="collapseDetail">
-            	  <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-cog"></i>&nbsp&nbsp상세 검색</h6>
-              	</a>
-              	<div id="collapseDetail" class="collapse" aria-labelledby="headingDetail" data-parent="#accordionSidebar">
-		          <div class="bg-white py-2 collapse-inner rounded">
-		            <h6 class="collapse-header">성</h6>
-		          </div>
-		        </div>
+          <!-- Content Row -->
+          <div class="row">
+
+            <div class="col-xl-8 col-lg-7">
+
+              <!-- Area Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">학습태도</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                  </div>
+                  <hr>
+                  Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
+                </div>
+              </div>
+
+              <!-- Bar Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-bar">
+                    <canvas id="myBarChart"></canvas>
+                  </div>
+                  <hr>
+                  Styling for the bar chart can be found in the <code>/js/demo/chart-bar-demo.js</code> file.
+                </div>
+              </div>
+
             </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>이름</th>
-                      <th>ID</th>
-                      <th>교육과정</th>
-                      <th>상세보기</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <th>이름</th>
-                      <th>ID</th>
-                      <th>교육과정</th>
-                      <th>상세보기</th>
-                    </tr>
-                  </tfoot>
-                  <tbody>
-                    <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
-                      <td>61</td>
-                    </tr>
-                  </tbody>
-                </table>
+
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                  <hr>
+                  Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
+                </div>
               </div>
             </div>
           </div>
@@ -379,11 +385,12 @@
   <script src="<spring:url value='/resources/js/sb-admin-2.min.js'/>"></script>
 
   <!-- Page level plugins -->
-  <script src="<spring:url value='/resources/vendor/datatables/jquery.dataTables.min.js'/>"></script>
-  <script src="<spring:url value='/resources/vendor/datatables/dataTables.bootstrap4.min.js'/>"></script>
+  <script src="<spring:url value='/resources/vendor/chart.js/Chart.min.js'/>"></script>
 
   <!-- Page level custom scripts -->
-  <script src="<spring:url value='/resources/js/demo/datatables-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-bar-demo.js'/>"></script>
 
 </body>
 
