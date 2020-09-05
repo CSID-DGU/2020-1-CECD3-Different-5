@@ -11,7 +11,7 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.different.web">
+	<logger name="com.different.webpage">
 		<level value="info" />
 	</logger>
 	

@@ -13,7 +13,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>search</title>
+  <title>student</title>
 
   <!-- Custom fonts for this template-->
   <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -268,22 +268,51 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">
-          	<i class="fas fa-fw fa-user-circle"></i>
-          	학생 목록
-          </h1>
+          <h1 class="h3 mb-2 text-gray-800">학생이름</h1>
+ 
+		  <!-- Content Row -->
+          <div class="row">
+
+            <div class="col-xl-8 col-lg-7">
+
+              <!-- Area Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">학습태도</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                  </div>
+                  <hr>
+                  	땡땡 학생의 학습태도는 성장세를 보입니다.
+                </div>
+              </div>
+            </div>
+
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">학생 정보</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                  <hr>
+                  Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
+                </div>
+              </div>
+            </div>
+          </div>
 
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-            	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDetail" aria-expanded="true" aria-controls="collapseDetail">
-            	  <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-cog"></i>&nbsp&nbsp상세 검색</h6>
-              	</a>
-              	<div id="collapseDetail" class="collapse" aria-labelledby="headingDetail" data-parent="#accordionSidebar">
-		          <div class="bg-white py-2 collapse-inner rounded">
-		            <h6 class="collapse-header">성</h6>
-		          </div>
-		        </div>
+              <h6 class="m-0 font-weight-bold text-primary">날짜별 상세보기</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -377,10 +406,14 @@
 
   <!-- Custom scripts for all pages-->
   <script src="<spring:url value='/resources/js/sb-admin-2.min.js'/>"></script>
+  <script src="<spring:url value='/resources/vendor/chart.js/Chart.min.js'/>"></script>
 
   <!-- Page level plugins -->
   <script src="<spring:url value='/resources/vendor/datatables/jquery.dataTables.min.js'/>"></script>
   <script src="<spring:url value='/resources/vendor/datatables/dataTables.bootstrap4.min.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-bar-demo.js'/>"></script>
 
   <!-- Page level custom scripts -->
   <script src="<spring:url value='/resources/js/demo/datatables-demo.js'/>"></script>
