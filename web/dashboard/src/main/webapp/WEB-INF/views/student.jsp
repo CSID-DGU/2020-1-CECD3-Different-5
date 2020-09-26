@@ -300,10 +300,13 @@
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="chart-pie pt-4">
-                    <canvas id="myPieChart"></canvas>
+                	<p/>나이: 8세
+                	<p/>교육과정: 초등학교 1학년
+                	<p/>소속: 혜정혜정초등학교
+                  
                   </div>
                   <hr>
-                  Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
+                  
                 </div>
               </div>
             </div>
@@ -319,26 +322,35 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>이름</th>
-                      <th>ID</th>
-                      <th>교육과정</th>
+                      <th>날짜</th>
+                      <th>총 학습시간</th>
+                      <th>총점</th>
                       <th>상세보기</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <th>이름</th>
-                      <th>ID</th>
-                      <th>교육과정</th>
+                      <th>날짜</th>
+                      <th>총 학습시간</th>
+                      <th>총점</th>
                       <th>상세보기</th>
                     </tr>
                   </tfoot>
                   <tbody>
                     <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
-                      <td>61</td>
+                      <td>2020.03.02</td>
+                      <td>30min</td>
+                      <td>80</td>
+                      <td><button style="align:left; 
+					  background-color:#2F504E;
+					  color:white;
+					  border:0;
+					  outline:0;
+					  width:80px;
+					  height:20px;
+					  font-size:10px;
+					  align:right;
+					  margin-top:-8px;">상세보기</button></td></td>
                     </tr>
                   </tbody>
                 </table>

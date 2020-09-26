@@ -306,10 +306,19 @@
                   </tfoot>
                   <tbody>
                     <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
-                      <td>61</td>
+                      <td>이아리</td>
+                      <td>ahri@hyejeongs.com</td>
+                      <td>초등학교 1학년</td>
+                      <td><button style="align:left; 
+					  background-color:#2F504E;
+					  color:white;
+					  border:0;
+					  outline:0;
+					  width:80px;
+					  height:20px;
+					  font-size:10px;
+					  align:right;
+					  margin-top:-8px;">상세보기</button></td>
                     </tr>
                   </tbody>
                 </table>

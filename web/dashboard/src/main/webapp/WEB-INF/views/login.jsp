@@ -85,13 +85,12 @@
 	
 		<hr class="in"/>
 		
-		<form>
+		<form action="/login" method="post">
 		<p class="login"/>&nbsp;&nbsp;ID : <input id="uid" type="text" border="0" outline="0"/><br>
 		<p class="login"/>PW : <input id="pwd" type="password" border="0" outline="0"/><br>
 		
 		<input class="login" type="submit" value="로그인"></input>
 		
-		</form>
 		<hr class="in"/>
 		<button><a href="search">회원가입</a></button>
 		<button><a href="search">비밀번호 찾기</a></button>
@@ -102,7 +101,7 @@
 	<hr class="out"/>	
 	
       <!-- Footer -->
-		<div style="padding-left:20%; margin-bottom:.5rem">
+		<div style="padding-left:20%; margin-bottom:10%">
 			<div style="float:left; margin-right:1.5rem; padding-top:.5rem"><img src="<spring:url value='/resources/img/etoos.png'/>" width="100px" top="10px"></div>
 			<div style="float:left">
 				<p style="text-align:left; margin:0"/>이투스교육 주식회사 서울시 서초구 남부순환로 2547 (서초동 1354-3) 사업자등록번호 220-85-32141

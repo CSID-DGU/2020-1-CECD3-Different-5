@@ -266,8 +266,8 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">학생 이름</h1>
-          <p class="mb-4">Chart.js is a third party plugin that is used to generate the charts in this theme. The charts below have been customized - for further customization options, please visit the <a target="_blank" href="https://www.chartjs.org/docs/latest/">official Chart.js documentation</a>.</p>
+          <h1 class="h3 mb-2 text-gray-800">박아리<pre>2020년 02월 03일</pre></h1>
+          <p class="mb-4"> 총점 : 80</p>
 
           <!-- Content Row -->
           <div class="row">
@@ -291,14 +291,15 @@
               <!-- Bar Chart -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">감정 변화</h6>
                 </div>
                 <div class="card-body">
                   <div class="chart-bar">
-                    <canvas id="myBarChart"></canvas>
+                  	
+                    <canvas id="myPieChart"></canvas>
                   </div>
                   <hr>
-                  Styling for the bar chart can be found in the <code>/js/demo/chart-bar-demo.js</code> file.
+                  	박아리 학생의 학습태도는 <code>좋음</code> 입니다.
                 </div>
               </div>
 
@@ -309,12 +310,17 @@
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">학습 태도 평가</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="chart-pie pt-4">
-                    <canvas id="myPieChart"></canvas>
+                  	<p/>총점:
+                  	<p/>총 학습시간: 
+                  	<p/>멍: 
+                  	<p/>자리이탈: 
+                  	<p/>이상행동: 
+                  	
                   </div>
                   <hr>
                   Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
@@ -390,7 +396,6 @@
   <!-- Page level custom scripts -->
   <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
   <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
-  <script src="<spring:url value='/resources/js/demo/chart-bar-demo.js'/>"></script>
 
 </body>
 
