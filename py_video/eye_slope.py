@@ -1,3 +1,5 @@
+# 눈깜빡임, 시선, 얼굴 기울기 인식
+
 import dlib
 import cv2
 import os
@@ -30,9 +32,9 @@ class EyeandSlope(object):
         elif gaze.is_center():
             text = "Looking center"
 
-        print(text)
-        cv2.putText(frame, text, (90, 60), cv2.FONT_HERSHEY_DUPLEX, 1.6, (147, 58, 31), 2)
-
+        cv2.putText,[
+            (frame, text, (90, 60), cv2.FONT_HERSHEY_DUPLEX, 1.6, (147, 58, 31), 2)
+        ]
         # position of the pupil (x,y)
         left_pupil = gaze.pupil_left_coords()
         right_pupil = gaze.pupil_right_coords()

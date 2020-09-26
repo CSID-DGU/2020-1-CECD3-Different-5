@@ -1,5 +1,5 @@
 # face_landmrk 찍고, 눈,코,입 삼각형 추출
-
+# 필요 없음
 import dlib
 import cv2
 import os
@@ -18,7 +18,6 @@ predictor = dlib.shape_predictor(model_path)
 while True:
     _, frame = webcam.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
 
     faces = detector(gray)
     for face in faces:

@@ -1,27 +1,16 @@
-import os
-import cv2
-import dlib
-import numpy as np
-from eye_slope import EyeandSlope
-from emotion import Emotion
+from analysisVideo import AnalyzeVideo
 
-webcam = cv2.VideoCapture(0)
-es = EyeandSlope()
-emotion = Emotion()
+analyze = AnalyzeVideo()
 
-while True:
-    ret, frame = webcam.read()
+fname = 'image/sample1.jpg'
 
-    canvas = np.zeros((250,300,3),dtype="uint8")
+analyze._analyzeFace(fname)
+analyze._analyzePose(fname)
 
-    frame = es._analyze(frame)
-    frame, canvas= emotion._analyze(frame,canvas)
+# from database.connect import Database
+# import datetime
+# db = Database()
 
-    cv2.imshow("Frame", frame)
-    cv2.imshow("Proportion", canvas)
-    
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-webcam.release()
-cv2.destroyAllWindows()
+# args = (datetime.datetime.now(),1,0,0,1,0)
+# db.insertData(args)
+# db.selectAllData()

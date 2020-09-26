@@ -26,15 +26,13 @@ class Emotion(object):
                                                 scaleFactor=1.1,
                                                 minNeighbors=5,
                                                 minSize=(30,30))
-        
-        #canvas = np.zeros((250, 300, 3), dtype="uint8")
-        
+                
         # 얼굴이 인식되면 감정 인식
         if len(faces) > 0:
-            # For the largest image
+            # 가장 큰 이미지
             face = sorted(faces, reverse=True, key=lambda x: (x[2] - x[0]) * (x[3] - x[1]))[0]
             (fX, fY, fW, fH) = face # 얼굴 시작 x, y좌표, width, height
-            # Resize the image to 48x48 for neural network
+            # 이미지 사이즈 조정 for neural network
             roi = gray[fY:fY + fH, fX:fX + fW]
             roi = cv2.resize(roi, (48, 48))
             roi = roi.astype("float") / 255.0
