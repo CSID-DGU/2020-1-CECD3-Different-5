@@ -17,6 +17,13 @@
         opencv:camera_id="any"
         opencv:show_fps="true"/>
 
+    <TextView
+        android:id="@+id/resultView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="100"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -46,12 +53,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="8"/>
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:text="정지"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/btnCapture"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="캡쳐"
-            android:layout_weight="10" />
+            android:layout_weight="10"
+            android:text="캡쳐" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"

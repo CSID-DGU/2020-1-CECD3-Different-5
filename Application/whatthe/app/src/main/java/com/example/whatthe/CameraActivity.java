@@ -1,19 +1,16 @@
 package com.example.whatthe;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.SyncStateContract;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -25,22 +22,18 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
+import org.w3c.dom.Text;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
 public class CameraActivity extends AppCompatActivity
@@ -64,6 +57,8 @@ public class CameraActivity extends AppCompatActivity
     private Mat matResult;
     Byte[] b;
     Button btnCapture;
+    Button btnStop;
+    TextView resultTV;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -88,7 +83,20 @@ public class CameraActivity extends AppCompatActivity
     public void getWriteLock() throws InterruptedException { writeLock.acquire(); }
     public void releaseWriteLock() { writeLock.release(); }
 
+    //소켓
+    private Socket socket;
+    //private String ip = "192.168.0.56"; // IP
+    private String ip = "192.168.0.27"; // IP
+    private int port = 8000;
+
+    OutputStream outputStream;
+    InputStream inputStream;
+
     private Timer cTimer;
+    boolean timerFlag = false;
+
+    private Handler mHandler;
+    String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +106,7 @@ public class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_camera);
+        mHandler = new Handler();
 
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
 
@@ -115,35 +124,67 @@ public class CameraActivity extends AppCompatActivity
             mOpenCvCameraView.setCameraPermissionGranted();
         }
 
+        resultTV = (TextView) findViewById(R.id.resultView);
         Button btnEnd = (Button) findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                try {
+                    //outputStream.close();
+                    //inputStream.close();
+                    if(socket != null) {
+                        socket.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 finish();
             }
         });
 
         btnCapture = (Button) findViewById(R.id.btnCapture);
+        btnStop = (Button) findViewById(R.id.btnStop);
         btnCapture.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                btnCapture.setVisibility(View.GONE);
+                btnStop.setVisibility(View.VISIBLE);
                 checkUpdate c = new checkUpdate();
+                timerFlag = true;
                 c.start();
                 send_period();
             }
         });
+
+        btnStop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                btnCapture.setVisibility(View.VISIBLE);
+                btnStop.setVisibility(View.GONE);
+                timerFlag = false;
+                cTimer.cancel();
+                mOpenCvCameraView.setVisibility(SurfaceView.GONE);
+                resultTV.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
-    //소켓
-    private Socket socket;
-    //private String ip = "192.168.0.56"; // IP
-    private String ip = "192.168.0.75"; // IP
-    private int port = 8000;
+    class result_ex implements Runnable {
+        private String msg;
+
+        public result_ex(String str){
+            this.msg = str;
+        }
+        @Override
+        public void run() {
+            resultTV.setText(msg);
+        }
+    }
+
 
     int w =0,h=0,f=0, dum=0;
     String lth;
-    OutputStream outputStream;
 
     class checkUpdate extends Thread {
         @Override
@@ -179,6 +220,7 @@ public class CameraActivity extends AppCompatActivity
                     getWriteLock();
 
                     outputStream = socket.getOutputStream();
+                    inputStream = socket.getInputStream();
 
                     byte[] imageInByte = new byte [f];
                     byte[] inst = lth.getBytes();
@@ -191,9 +233,26 @@ public class CameraActivity extends AppCompatActivity
                     matInput.get(0,0,imageInByte);
                     outputStream.write(inst);
                     for(int i = 0;i<f;i++){
-                        //Log.d(TAG,"???"+i);
                         outputStream.write((imageInByte[i] & 0xff));
                     }
+
+                    String end = "000000000009";
+                    byte[] endb = end.getBytes();
+                    if(timerFlag == false){
+                        outputStream.write(endb);
+
+                        byte[] d = new byte[4];
+                        inputStream.read(d, 0, 4);
+                        ByteBuffer b = ByteBuffer.wrap(d);
+                        b.order(ByteOrder.LITTLE_ENDIAN);
+                        int length = b.getInt();
+                        byte[] dd = new byte[length];
+                        inputStream.read(dd, 0, length);
+                        result = new String(dd, "UTF-8");
+                        mHandler.post(new result_ex(result));
+                        //Log.d("ClientThread", "받은 데이터 : " + result);
+                    }
+
                 }
                 catch (Exception e) {
                 }
