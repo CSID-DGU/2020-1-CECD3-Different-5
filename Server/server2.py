@@ -5,12 +5,6 @@ import time
 import threading
 from analysisVideo import AnalyzeVideo
 
-def create_thread(s_socket) :
-    global index
-    t.append(Cserver(s_socket))
-    t[index].deamon = True
-    t[index].start()
-
 #socket에서 수신한 버퍼를 반환하는 함수
 def recvall(sock, count):
     # 바이트 문자열
