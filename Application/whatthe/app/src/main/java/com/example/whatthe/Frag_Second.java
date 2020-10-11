@@ -16,6 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,16 +52,29 @@ public class Frag_Second extends Fragment {
     ListView mlistView;
     String mJsonString;
 
+    HorizontalBarChart cctchart, emochart;
+    int UnCct = 0xFFC1E6FF, Cct = 0xFF508BE0;
+    int[] color;
+    float[] always;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater Inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = Inflater.inflate(R.layout.second_study, container, false);
-
+/*
         mTextViewResult = view.findViewById(R.id.textView_main_result);
         mlistView = view.findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
         GetData task = new GetData();
-        task.execute("http://192.168.0.27/getjson.php"); //IP 주소 변경
+        task.execute("http://192.168.113.14/getjson.php"); //IP 주소 변경
+
+        cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
+
+        cctchart.setDescription(null);
+        cctchart.getAxisRight().setDrawLabels(false);
+        cctchart.getXAxis().setDrawLabels(false);
+        cctchart.getLegend().setEnabled(false);
+*/
 
         return view;
     }
@@ -136,6 +154,13 @@ public class Frag_Second extends Fragment {
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+            int jsonLength = jsonArray.length();
+
+            color = new int[jsonLength];
+            always = new float[jsonLength];
+            for(int i = 0;i<jsonLength;i++){
+                always[i] = 5f;
+            }
 
             for(int i=0;i<jsonArray.length();i++){
 
@@ -144,6 +169,9 @@ public class Frag_Second extends Fragment {
                 String emotion = item.getString(TAG_EMOTION);
                 String blink = item.getString(TAG_BLINK);
                 String gaze = item.getString(TAG_GAZE);
+
+                if(item.getString(TAG_RESULT).contains("0")) color[i] = UnCct;
+                else color[i] = Cct;
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
@@ -160,6 +188,8 @@ public class Frag_Second extends Fragment {
                     new int[]{R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_address}
             );
 
+            setCctGraph();
+
             mlistView.setAdapter(adapter);
 
         } catch (JSONException e) {
@@ -167,5 +197,20 @@ public class Frag_Second extends Fragment {
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    private void setCctGraph(){
+        ArrayList<BarEntry> cct = new ArrayList<BarEntry>();
+        cct.add(new BarEntry(always,0));
+
+        ArrayList year = new ArrayList();
+        year.add("2008");
+
+        BarDataSet bardataset = new BarDataSet(cct, "");
+        cctchart.animateX(5000);
+        BarData data = new BarData(year, bardataset);
+        data.setDrawValues(false);
+        bardataset.setColors(color);
+        cctchart.setData(data);
     }
 }

@@ -12,5 +12,10 @@
         android:icon="@drawable/ic_show_chart"
         android:title="dashboard" />
 
+    <item
+        android:id="@+id/logout"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="logout" />
+
 
 </menu>
