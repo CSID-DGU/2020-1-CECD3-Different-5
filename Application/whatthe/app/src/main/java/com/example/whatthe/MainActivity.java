@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -36,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
-        //TextView tv = findViewById(R.id.sample_text);
-        //tv.setText(stringFromJNI());
 
         final Intent permi = new Intent(getApplicationContext(), PermissionActivity.class);
         but_camera = (ImageButton) findViewById(R.id.cameraButton);
@@ -59,6 +58,24 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.dashboard:
                         setFrag(1);
+                        break;
+                    case R.id.logout:
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("로그아웃").setMessage("로그아웃 하시겠습니까?")
+                                .setPositiveButton("로그아웃", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(i);
+                                    }
+                                })
+                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    }
+                                })
+                                .show();
+
                         break;
                 }
                 return true;

@@ -10,6 +10,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,8 +87,8 @@ public class CameraActivity extends AppCompatActivity
 
     //소켓
     private Socket socket;
-    //private String ip = "192.168.0.56"; // IP
-    private String ip = "192.168.0.27"; // IP
+    private String ip = "192.168.113.15"; // IP
+    //private String ip = "192.168.113.14"; // IP
     private int port = 8000;
 
     OutputStream outputStream;
@@ -156,10 +158,10 @@ public class CameraActivity extends AppCompatActivity
             }
         });
 
+
         btnStop.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                btnCapture.setVisibility(View.VISIBLE);
                 btnStop.setVisibility(View.GONE);
                 timerFlag = false;
                 cTimer.cancel();
@@ -178,7 +180,8 @@ public class CameraActivity extends AppCompatActivity
         }
         @Override
         public void run() {
-            resultTV.setText(msg);
+            String[] array = msg.split("/");
+            resultTV.setText("공부 시간 : "+array[0]+"\n감정 상태 : "+array[1]+"\n집중 점수 : "+array[2]);
         }
     }
 
@@ -241,8 +244,8 @@ public class CameraActivity extends AppCompatActivity
                     if(timerFlag == false){
                         outputStream.write(endb);
 
-                        byte[] d = new byte[4];
-                        inputStream.read(d, 0, 4);
+                        byte[] d = new byte[50];
+                        inputStream.read(d, 0, 50);
                         ByteBuffer b = ByteBuffer.wrap(d);
                         b.order(ByteOrder.LITTLE_ENDIAN);
                         int length = b.getInt();
@@ -260,7 +263,7 @@ public class CameraActivity extends AppCompatActivity
             }
         };
 
-        cTimer.schedule(sp, 500, 500);
+        cTimer.schedule(sp, 500, 1000);
     }
 
 

@@ -4,6 +4,7 @@ import numpy as np
 import time
 import threading
 from analysisVideo import AnalyzeVideo
+import datetime
 
 #socket에서 수신한 버퍼를 반환하는 함수
 def recvall(sock, count):
@@ -19,9 +20,16 @@ def recvall(sock, count):
 def handle_client(client, addr, index, analyze) :
     q = 0
     print("Connect with ", addr)
+    start_time = datetime.datetime.now()
+    total_time = 0
+    total_emotion = ""
+    total_score = 0
     while True :
         length = recvall(client, 12)
         print("Receive :", length)
+        if length == b'000000000009' :
+            total_time, total_emotion, total_score = analyze._break(start_time)
+            break
         stringData = recvall(client, int(length))
         data = np.fromstring(stringData, dtype = 'uint8')
 
@@ -45,9 +53,18 @@ def handle_client(client, addr, index, analyze) :
         t.start()
 
         q += 1
+    
+    print('Sending...')
+    msg = str(total_time).rjust(20, ' ') + total_emotion.rjust(10, ' ') + str(total_score).rjust(3, ' ')
+    print(msg)
+    send_data = msg.encode()
+    length = len(send_data)
+    client.sendall(length.to_bytes(33,byteorder='little'))
+    client.sendall(send_data)
+
     client.close()
 
-HOST='192.168.0.56'
+HOST='192.168.113.15'
 PORT=8000
 analyze = AnalyzeVideo()
 

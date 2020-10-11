@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #from analysisVideo import AnalyzeVideo
 from database.connect import Database
 from datetime import datetime
@@ -26,3 +27,20 @@ print(tabName)
 data = (4,5,3,2,5,19,"timestamp")
 args = (tabName,data)
 db.insertOneVideo(args)
+=======
+from analysisVideo import AnalyzeVideo
+
+analyze = AnalyzeVideo()
+
+fname = 'image/sample3.jpg'
+# analyze._analyzeHand(fname)
+analyze._analyzeFace(fname, 0)
+# from database.connect import Database
+# import datetime
+# db = Database()
+
+# args = (datetime.datetime.now(),1,0,0,1,0)
+# db.insertData(args)
+
+# db.selectAllData()
+>>>>>>> de12efc313bcf0a82dda7736e6a8f6ff9b5ef0b8
