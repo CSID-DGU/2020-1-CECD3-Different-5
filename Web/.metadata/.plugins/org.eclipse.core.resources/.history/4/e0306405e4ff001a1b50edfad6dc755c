@@ -1,0 +1,5 @@
+package com.different.webpage.dto;
+
+public class UserDto {
+
+}
