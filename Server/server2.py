@@ -20,6 +20,9 @@ def recvall(sock, count):
 def handle_client(client, addr, index, analyze) :
     q = 0
     print("Connect with ", addr)
+    # data = client.recv(12)
+    # stringdate = data.decode()
+    # print("Id ", stringdate)
     start_time = datetime.datetime.now()
     total_time = 0
     total_emotion = ""

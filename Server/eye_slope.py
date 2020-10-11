@@ -1,4 +1,4 @@
-# 눈깜빡임, 시선, 얼굴 기울기 인식
+# 눈깜빡임, 시선, 얼굴 기울기, 손 인식
 
 import dlib
 import cv2
@@ -30,16 +30,7 @@ class EyeandSlope(object):
 
         if gaze.is_blinking() or gaze.is_right() or gaze.is_left() or gaze.is_center() or gaze.is_up():
             if gaze.is_blinking() : result_blink = 0
-            result_gaze = 0
-
-        # cv2.putText,[
-        #     (frame, text, (90, 60), cv2.FONT_HERSHEY_DUPLEX, 1.6, (147, 58, 31), 2)
-        # ]
-        # # position of the pupil (x,y)
-        # left_pupil = gaze.pupil_left_coords()
-        # right_pupil = gaze.pupil_right_coords()
-        # cv2.putText(frame, "Left pupil:  " + str(left_pupil), (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (147, 58, 31), 1)
-        # cv2.putText(frame, "Right pupil: " + str(right_pupil), (90, 165), cv2.FONT_HERSHEY_DUPLEX, 0.9, (147, 58, 31), 1)           
+            result_gaze = 0         
 
         return result_gaze, result_blink
 
@@ -65,14 +56,10 @@ class EyeandSlope(object):
 
         mouth_x /= 20
         mouth_y /= 20
-                
-        # pts = np.array([[eye1_x,eye1_y],[eye2_x,eye2_y],[mouth_x,mouth_y]], np.int32)
-        # pts = pts.reshape((-1,1,2))
 
-        # 눈이 인식되고 기울기를 구할 수 있음
         if (eye2_x-eye1_x) :
-            # eye_slope = (eye2_y-eye1_y) / (eye2_x-eye1_x) # 눈이 이루는 기울기
-            result_slope = self._calculateAngle([(eye2_x+eye1_x)/2, (eye2_y+eye1_y)/2], [mouth_x,mouth_y], [[eye1_x,eye1_y],[eye2_x,eye2_y]])
+            if (eye2_y-eye1_y) / (eye2_x-eye1_x) < 0.4 :
+                result_slope = self._calculateAngle([(eye2_x+eye1_x)/2, (eye2_y+eye1_y)/2], [mouth_x,mouth_y], [[eye1_x,eye1_y],[eye2_x,eye2_y]])
 
         return result_slope
 
@@ -88,17 +75,7 @@ class EyeandSlope(object):
             x2=face.right()
             y2=face.bottom()
 
-            # 얼굴 인식된 부분 사각형으로 표시
-            #cv2.rectangle(frame, (x1,y1),(x2,y2),(0,255,0),3)
-
             landmarks = self.predictor(frame, face)
-                
-            # for n in range(0,68):
-            #     x = landmarks.part(n).x
-            #     y = landmarks.part(n).y
-
-            #     # face landmark 출력
-            #     cv2.circle(frame,(x,y),3,(255,0,0),-1)
             
             result.extend(list(self._gazeTracking(frame)))
             result.append(self._facialSlope(landmarks))
@@ -110,8 +87,6 @@ class EyeandSlope(object):
                     result.append(0)
                 else : result.append(1)
             else : result.append(0)
-
-            # cv2.polylines(frame, [pts], True, (255,0,0),3)
 
         return result
 
