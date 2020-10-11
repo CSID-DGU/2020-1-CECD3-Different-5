@@ -6,6 +6,7 @@ import os
 import numpy as np
 import math
 from gaze_tracking import GazeTracking
+from hand import Hand
 
 class EyeandSlope(object):
 
@@ -15,6 +16,7 @@ class EyeandSlope(object):
 
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(model_path)
+        self.hand = Hand()
 
     def _gazeTracking(self,frame): 
 
@@ -69,15 +71,15 @@ class EyeandSlope(object):
 
         # 눈이 인식되고 기울기를 구할 수 있음
         if (eye2_x-eye1_x) :
-            eye_slope = (eye2_y-eye1_y) / (eye2_x-eye1_x) # 눈이 이루는 기울기
-            print("eye_slope : ", eye_slope)
-            # 어깨와 평행이 되는지 인식하는 코드 추가 필요
-            # 평행하다면 몸 자체가 기울어져 있는 건 아닌지
+            # eye_slope = (eye2_y-eye1_y) / (eye2_x-eye1_x) # 눈이 이루는 기울기
             result_slope = self._calculateAngle([(eye2_x+eye1_x)/2, (eye2_y+eye1_y)/2], [mouth_x,mouth_y], [[eye1_x,eye1_y],[eye2_x,eye2_y]])
 
         return result_slope
 
-    def _analyze(self, frame):
+    def _handTracking(self, fname) :
+        return self.hand.inputImg(fname)
+
+    def _analyze(self, frame, fname):
         faces = self.detector(frame)
         result = []
         for face in faces:
@@ -100,6 +102,15 @@ class EyeandSlope(object):
             
             result.extend(list(self._gazeTracking(frame)))
             result.append(self._facialSlope(landmarks))
+            
+            hand_min_point = self._handTracking(fname)
+
+            if hand_min_point != 1e9 and landmarks.part(8).y :
+                if hand_min_point <= landmarks.part(8).y :
+                    result.append(0)
+                else : result.append(1)
+            else : result.append(0)
+
             # cv2.polylines(frame, [pts], True, (255,0,0),3)
 
         return result

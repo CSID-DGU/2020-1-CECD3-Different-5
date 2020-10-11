@@ -16,8 +16,9 @@ class Hand(object):
         # 위의 path에 있는 network 불러오기
         self.net = cv2.dnn.readNetFromCaffe(self.protoFile, self.weightsFile)
 
-    def inputImg(self,img):
-        
+    def inputImg(self,fname):
+        img = cv2.imread(fname, cv2.IMREAD_COLOR)
+        # img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
         imgWidth = img.shape[1]
         imgHeight = img.shape[0]
 
@@ -30,15 +31,15 @@ class Hand(object):
         self.net.setInput(inpBlob)
         # 결과 받아오기
         output = self.net.forward()
-        img = self.drawPoints(img,output)
-        return img
+        point = self.extractPoints(img, output)
+        return point
 
-    def drawPoints(self, img, output):
+    def extractPoints(self, img, output):
 
         imageHeight, imageWidth, _ = img.shape
 
         # 손 검출한 포인트
-        points = []
+        min_point = 1e9
 
         for i in range(self.nPoints):
             
@@ -49,22 +50,10 @@ class Hand(object):
             minVal, prob, minLoc, point = cv2.minMaxLoc(probMap)
 
             if prob > self.threshold : 
-                cv2.circle(img, (int(point[0]),int(point[1])), 6, (0,255,255), thickness=-1, lineType=cv2.FILLED)
-                cv2.putText(img, "{}".format(i), (int(point[0]), int(point[1])), cv2.FONT_HERSHEY_SIMPLEX, .8, (0, 0, 255), 2, lineType=cv2.LINE_AA)
+                # cv2.circle(img, (int(point[0]),int(point[1])), 6, (0,255,255), thickness=-1, lineType=cv2.FILLED)
+                # cv2.putText(img, "{}".format(i), (int(point[0]), int(point[1])), cv2.FONT_HERSHEY_SIMPLEX, .8, (0, 0, 255), 2, lineType=cv2.LINE_AA)
 
                 # threshold( 0.1 )보다 크면 points에 추가
-                points.append((int(point[0]),int(point[1])))
-            else:
-                points.append(None)
+                min_point = min(min_point, int(point[1]))
 
-        # 검출한 포인트 선으로 연결
-        for pair in self.POSE_PAIRS:
-            partA=pair[0]
-            partB=pair[1]
-
-            if points[partA] and points[partB]:
-                cv2.line(img,points[partA],points[partB],(0,255,255),2,lineType=cv2.LINE_AA)
-                cv2.circle(img,points[partA],4,(0,0,255),thickness=-1,lineType=cv2.FILLED)  
-                cv2.circle(img,points[partB],4,(0,0,255),thickness=-1,lineType=cv2.FILLED)  
-
-        return img
+        return min_point

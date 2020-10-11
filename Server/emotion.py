@@ -16,9 +16,8 @@ class Emotion(object):
 
         #emotion model
         self.emotion_classifier=load_model('trained_models/emotion_model.hdf5',compile=False)
-        self.EMOTIONS = ["Angry","Disgusting","Fearful","Happy","Sad","Surprising","Neutral"]
 
-    def _analyze(self,frame,canvas):
+    def _analyze(self,frame):
         # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Face detection in frame
@@ -41,18 +40,8 @@ class Emotion(object):
                         
             # Emotion predict
             preds = self.emotion_classifier.predict(roi)[0]
-            emotion_probability = np.max(preds) #대표하는 감정
-            label = self.EMOTIONS[preds.argmax()]
-            
-            # 감정 출력 & 얼굴 표시
-            cv2.putText(frame, label, (fX, fY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-            cv2.rectangle(frame, (fX, fY), (fX + fW, fY + fH), (0, 0, 255), 2)
-    
-            # 감정별 퍼센트 표시
-            for (i, (emotion, prob)) in enumerate(zip(self.EMOTIONS, preds)):
-                text = "{}: {:.2f}%".format(emotion, prob * 100)    
-                w = int(prob * 300)
-                cv2.rectangle(canvas, (7, (i * 35) + 5), (w, (i * 35) + 35), (0, 0, 255), -1)
-                cv2.putText(canvas, text, (10, (i * 35) + 23), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 2)
+            # emotion_probability = np.max(preds) #대표하는 감정
 
-        return frame, canvas
+            return preds.argmax()
+
+        return -1
