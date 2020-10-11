@@ -27,7 +27,7 @@ class AnalyzeVideo(object):
             frame = cv2.imread(fname, cv2.IMREAD_COLOR)
             frame = self.hand.inputImg(frame)
 
-            cv2.imshow(fname,frame)
+            cv2.imwrite(fname,frame)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
