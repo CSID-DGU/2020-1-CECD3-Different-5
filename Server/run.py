@@ -2,10 +2,11 @@ from analysisVideo import AnalyzeVideo
 
 analyze = AnalyzeVideo()
 
-fname = 'image/sample1.jpg'
+fname = 'image/hand3.jpg'
 
-analyze._analyzeFace(fname)
-analyze._analyzePose(fname)
+# analyze._analyzeFace(fname)
+# analyze._analyzePose(fname)
+analyze._analyzeHand(fname)
 
 # from database.connect import Database
 # import datetime
