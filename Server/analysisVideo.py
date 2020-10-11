@@ -15,26 +15,7 @@ class AnalyzeVideo(object):
         self.total_emotions = [0] * len(self.EMOTIONS)
         self.face = EyeandSlope()
         self.emotion = Emotion()
-<<<<<<< HEAD
-    #     self.pose = OpenPose()
-        self.hand = Hand()
-
-    def _analyzeHand(self, fname):
-
-        while True:
-            
-            frame = cv2.imread(fname, cv2.IMREAD_COLOR)
-            frame = self.hand.inputImg(frame)
-
-            cv2.imwrite(fname,frame)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        cv2.destroyAllWindows()
-=======
         self.check_5sec = 0
->>>>>>> de12efc313bcf0a82dda7736e6a8f6ff9b5ef0b8
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
