@@ -60,4 +60,4 @@ class AnalyzeVideo(object):
             total_score += sum(score)*5
         if len(self.total_focus) : total_score /= len(self.total_focus)
 
-        return total_time, self.EMOTIONS[maximum_emotion], total_score
+        return total_time, self.EMOTIONS[maximum_emotion], "%.2f" % total_score

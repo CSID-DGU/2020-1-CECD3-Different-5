@@ -55,18 +55,17 @@ def handle_client(client, addr, index, analyze) :
         q += 1
     
     print('Sending...')
-    msg = str(total_time).rjust(20, ' ') + total_emotion.rjust(10, ' ') + str(total_score).rjust(3, ' ')
+    msg = str(total_time)+ '/' + total_emotion +  '/' + str(total_score)
     print(msg)
     send_data = msg.encode()
     length = len(send_data)
-    client.sendall(length.to_bytes(33,byteorder='little'))
+    client.sendall(length.to_bytes(len(msg),byteorder='little'))
     client.sendall(send_data)
 
     client.close()
 
 HOST='192.168.113.15'
 PORT=8000
-analyze = AnalyzeVideo()
 
 #TCP 사용
 s = socket.socket(socket.AF_INET)
@@ -86,7 +85,7 @@ while True :
         client, addr = s.accept()
     except KeyboardInterrupt :
         s.close()
-    
+    analyze = AnalyzeVideo()
     t = threading.Thread(target = handle_client, args = (client, addr, index, analyze))
     index += 1
     t.daemon = True
