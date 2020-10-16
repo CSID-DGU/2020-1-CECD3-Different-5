@@ -29,8 +29,9 @@
         android:layout_marginRight="50dp"
         android:layout_weight="100"
         android:background="@drawable/round_rec"
+        android:paddingLeft="100dp"
         android:paddingTop="20dp"
-        android:paddingEnd="20dp"
+        android:paddingBottom="20dp"
         android:visibility="gone" />
 
     <LinearLayout

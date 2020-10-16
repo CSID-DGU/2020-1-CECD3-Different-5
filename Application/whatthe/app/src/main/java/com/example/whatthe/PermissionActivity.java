@@ -14,10 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 public class PermissionActivity extends AppCompatActivity {
+
+    String id = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
+
+        id = getIntent().getStringExtra("userID");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //퍼미션 상태 확인
@@ -27,6 +31,7 @@ public class PermissionActivity extends AppCompatActivity {
                 requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
             }else{
                 Intent mainIntent = new Intent(getApplicationContext(), CameraActivity.class);
+                mainIntent.putExtra("ID", id);
                 startActivity(mainIntent);
                 finish();
             }
@@ -78,6 +83,7 @@ public class PermissionActivity extends AppCompatActivity {
                     else
                     {
                         Intent mainIntent = new Intent(getApplicationContext(), CameraActivity.class);
+                        mainIntent.putExtra("ID", id);
                         startActivity(mainIntent);
                         finish();
                     }

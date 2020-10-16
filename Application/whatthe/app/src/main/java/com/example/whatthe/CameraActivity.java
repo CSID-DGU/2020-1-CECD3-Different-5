@@ -96,9 +96,11 @@ public class CameraActivity extends AppCompatActivity
 
     private Timer cTimer;
     boolean timerFlag = false;
+    boolean sendID = false;
 
     private Handler mHandler;
     String result;
+    String getID = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,9 @@ public class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_camera);
+
+        getID = getIntent().getStringExtra("ID");
+
         mHandler = new Handler();
 
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
@@ -153,6 +158,7 @@ public class CameraActivity extends AppCompatActivity
                 btnStop.setVisibility(View.VISIBLE);
                 checkUpdate c = new checkUpdate();
                 timerFlag = true;
+                sendID = true;
                 c.start();
                 send_period();
             }
@@ -181,6 +187,7 @@ public class CameraActivity extends AppCompatActivity
         @Override
         public void run() {
             String[] array = msg.split("/");
+            Log.d("???",msg);
             resultTV.setText("공부 시간 : "+array[0]+"\n감정 상태 : "+array[1]+"\n집중 점수 : "+array[2]);
         }
     }
@@ -233,6 +240,20 @@ public class CameraActivity extends AppCompatActivity
 
                     smaller(matInput.getNativeObjAddr(),matResult.getNativeObjAddr());
 
+                    if(sendID == true){
+
+                        int idLength = getID.length();
+                        if (idLength < 12) {
+                            for (int i = 1; i+idLength<=12; i++)
+                                getID = "0" + getID;
+                        }
+
+                        byte[] student_id = getID.getBytes();
+
+                        outputStream.write(student_id);
+                        sendID = false;
+                    }
+
                     matInput.get(0,0,imageInByte);
                     outputStream.write(inst);
                     for(int i = 0;i<f;i++){
@@ -244,6 +265,7 @@ public class CameraActivity extends AppCompatActivity
                     if(timerFlag == false){
                         outputStream.write(endb);
 
+                        Log.d("???","0009 보냄");
                         byte[] d = new byte[50];
                         inputStream.read(d, 0, 50);
                         ByteBuffer b = ByteBuffer.wrap(d);

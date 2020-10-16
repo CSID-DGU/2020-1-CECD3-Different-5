@@ -2,6 +2,7 @@ package com.example.whatthe;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -30,6 +32,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -40,12 +44,13 @@ public class Frag_Second extends Fragment {
     private static String TAG = "phptest";
 
     private static final String TAG_JSON="webnautes";
-    private static final String TAG_TIMESTAMP = "timestamp";
     private static final String TAG_EMOTION = "emotion";
     private static final String TAG_BLINK ="blink";
     private static final String TAG_GAZE = "gaze";
     private static final String TAG_SLOPE = "slope";
-    private static final String TAG_RESULT ="result";
+    private static final String TAG_HAND = "hand";
+    private static final String TAG_SCORE ="score";
+    private static final String TAG_TIMESTAMP = "timestamp";
 
     private TextView mTextViewResult;
     ArrayList<HashMap<String, String>> mArrayList;
@@ -57,16 +62,26 @@ public class Frag_Second extends Fragment {
     int[] color;
     float[] always;
 
+    String userId;
+    String date;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater Inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = Inflater.inflate(R.layout.second_study, container, false);
-/*
+
+        userId = getArguments().getString("userId");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        date = LocalDate.now().format(formatter);
+        //Log.d("???","http://192.168.0.27/query1.php?table="+userId+"&date="+date);
+
         mTextViewResult = view.findViewById(R.id.textView_main_result);
         mlistView = view.findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
         GetData task = new GetData();
-        task.execute("http://192.168.113.14/getjson.php"); //IP 주소 변경
+
+        task.execute("http://192.168.0.27/query1.php?table="+userId+"&date="+date); //IP 주소 변경
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
 
@@ -74,7 +89,7 @@ public class Frag_Second extends Fragment {
         cctchart.getAxisRight().setDrawLabels(false);
         cctchart.getXAxis().setDrawLabels(false);
         cctchart.getLegend().setEnabled(false);
-*/
+
 
         return view;
     }
@@ -170,7 +185,7 @@ public class Frag_Second extends Fragment {
                 String blink = item.getString(TAG_BLINK);
                 String gaze = item.getString(TAG_GAZE);
 
-                if(item.getString(TAG_RESULT).contains("0")) color[i] = UnCct;
+                if(item.getString(TAG_SCORE).contains("0")) color[i] = UnCct;
                 else color[i] = Cct;
 
                 HashMap<String,String> hashMap = new HashMap<>();

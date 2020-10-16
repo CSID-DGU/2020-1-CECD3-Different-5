@@ -78,10 +78,9 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/textView_main_result"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="\t졸음 횟수 1회\n\n\t자세 불량 1회\n\n\t시선 이탈 1회\n" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
