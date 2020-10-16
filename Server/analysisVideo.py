@@ -19,7 +19,6 @@ class AnalyzeVideo(object):
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
-        # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
         result = self.face._analyze(frame, fname)
         if result :
@@ -30,7 +29,7 @@ class AnalyzeVideo(object):
             for i, sub_result in enumerate(result) : self.moment_focus[i].append(0)
             self.total_emotions[-1] += 1
 
-        # os.remove(fname)
+        os.remove(fname)
 
         self.check_5sec += 1
         if self.check_5sec > 5 :
@@ -46,7 +45,6 @@ class AnalyzeVideo(object):
             hand = sum(self.moment_focus[3])
 
             self.total_focus.append([gaze, blink, slope, hand])
-        print(self.total_focus)
 
         self.moment_focus = [[] for _ in range(4)]
 
@@ -60,4 +58,4 @@ class AnalyzeVideo(object):
             total_score += sum(score)*5
         if len(self.total_focus) : total_score /= len(self.total_focus)
 
-        return total_time, self.EMOTIONS[maximum_emotion], total_score
+        return total_time, self.EMOTIONS[maximum_emotion], "%.2f" % total_score
