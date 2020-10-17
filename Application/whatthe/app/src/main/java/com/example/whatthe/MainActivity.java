@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.whatthe.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -119,5 +120,18 @@ public class MainActivity extends AppCompatActivity {
                 ft.commit(); //저장의미
                 break;
         }
+    }
+
+    long pressTime;
+    @Override
+    public void onBackPressed() {
+
+        if(System.currentTimeMillis() - pressTime <2000){
+            finishAffinity();
+            return;
+        }
+        Toast.makeText(this,"한 번 더 누르시면 앱이 종료됩니다",Toast.LENGTH_LONG).show();
+        pressTime = System.currentTimeMillis();
+
     }
 }
