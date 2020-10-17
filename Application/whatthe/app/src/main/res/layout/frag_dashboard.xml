@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="75dp">
@@ -12,9 +13,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp">
-
-    </com.github.mikephil.charting.charts.LineChart>
+        android:layout_marginTop="0dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,7 +50,7 @@
                     android:paddingBottom="5dp"
                     android:text="피드백이 아직 없습니다."
                     android:textAlignment="center"
-                    android:textColor="#CFCFCF"
+                    android:textColor="#AAAAAA"
                     android:textSize="18dp" />
             </LinearLayout>
 

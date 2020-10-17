@@ -224,7 +224,9 @@ public class FragHome extends Fragment {
         private ArrayList<String> finalTime;
 
         public result_ex(int score, int r, ArrayList<String> tta){
-            this.finalScore = score/r;
+            if(r != 0) {
+                this.finalScore = score / r;
+            }else this.finalScore = 0;
             this.finalTime = tta;
         }
         @Override
@@ -234,15 +236,17 @@ public class FragHome extends Fragment {
             round = 0;
             try {
                 Calendar cal = Calendar.getInstance();
-                Date date = timeFormat.parse(finalTime.get(0));
-                cal.setTime(date);
-                for(int i = 1;i<finalTime.size();i++){
-                    String[] array = finalTime.get(i).split(":");
-                    cal.add(Calendar.HOUR, Integer.parseInt(array[0]));
-                    cal.add(Calendar.MINUTE, Integer.parseInt(array[1]));
-                    cal.add(Calendar.SECOND, Integer.parseInt(array[2]));
+                if(finalTime != null) {
+                    Date date = timeFormat.parse(finalTime.get(0));
+                    cal.setTime(date);
+                    for (int i = 1; i < finalTime.size(); i++) {
+                        String[] array = finalTime.get(i).split(":");
+                        cal.add(Calendar.HOUR, Integer.parseInt(array[0]));
+                        cal.add(Calendar.MINUTE, Integer.parseInt(array[1]));
+                        cal.add(Calendar.SECOND, Integer.parseInt(array[2]));
+                    }
+                    studyTime.setText(timeFormat.format(cal.getTime()));
                 }
-                studyTime.setText(timeFormat.format(cal.getTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

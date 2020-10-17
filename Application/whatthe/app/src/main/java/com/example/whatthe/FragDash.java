@@ -16,10 +16,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.MarkerView;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -65,6 +68,7 @@ public class FragDash extends Fragment {
     private LineChart chart;
     ArrayList<Entry> values;
     ArrayList<String> xVals;
+    XAxis xAxis;
 
     TextView feedbackTV;
 
@@ -82,6 +86,22 @@ public class FragDash extends Fragment {
         mHandler = new Handler();
 
         chart = (LineChart) view.findViewById(R.id.Lchart);//layout의 id
+        chart.setDescription(null);
+        chart.getLegend().setEnabled(false);
+        xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMinValue(-0.03f);
+        xAxis.setAxisMaxValue(-0.03f);
+
+        YAxis yAxisRight = chart.getAxisRight(); //Y축의 오른쪽면 설정
+        yAxisRight.setDrawLabels(false);
+        yAxisRight.setDrawAxisLine(false);
+        yAxisRight.setDrawGridLines(false);
+        YAxis yAxisLeft = chart.getAxisLeft();
+        yAxisLeft.setAxisMinValue(0);
+        yAxisLeft.setAxisMaxValue(100);
+
+
         feedbackTV = (TextView) view.findViewById(R.id.feedbackTV);
 
         mTextViewResult = view.findViewById(R.id.textView_main_result);
@@ -214,17 +234,24 @@ public class FragDash extends Fragment {
             String date = dateArray.get(i);
             studyData s = mArrayList.get(i).get(date);
             values.add(new Entry(s.dscore, i));
-            xVals.add(date);
+            xVals.add(date.substring(4,6)+"월"+date.substring(6)+"일");
         }
 
         //values.add(new Entry(Float.parseFloat(item.getString(TAG_SCORE)), i));
 
         LineDataSet set1 = new LineDataSet(values, "DataSet 1");
+        set1.setColor(ContextCompat.getColor(getContext(), R.color.etoos)); //LineChart에서 Line Color 설정
+        set1.setCircleColor(ContextCompat.getColor(getContext(), R.color.etoos)); // LineChart에서 Line Circle Color 설정
+        set1.setLineWidth(2); // 선 굵기
+        set1.setCircleRadius(6); // 곡률
+        set1.setHighLightColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        set1.setHighlightLineWidth(2);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1); // add the data sets
 
         LineData data = new LineData(xVals, dataSets);
+        data.setValueTextSize(10);
         chart.setData(data);
         chart.setTouchEnabled(true);
         CustomMarkerView mv = new CustomMarkerView (getContext(), R.layout.frag_dashboard);
@@ -267,7 +294,14 @@ public class FragDash extends Fragment {
         }
         @Override
         public void run() {
-            feedbackTV.setText(feedback);
+            if(feedback.isEmpty()){
+                feedbackTV.setText("피드백이 아직 없습니다.");
+                feedbackTV.setTextColor(Color.parseColor("#AAAAAA"));
+            }else {
+                feedbackTV.setText(feedback);
+                feedbackTV.setTextColor(Color.parseColor("#000000"));
+            }
+
         }
     }
 
