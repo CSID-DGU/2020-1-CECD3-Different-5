@@ -1,8 +1,10 @@
 package com.example.whatthe;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,24 +19,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class FragDash extends Fragment {
@@ -58,7 +66,11 @@ public class FragDash extends Fragment {
     ArrayList<Entry> values;
     ArrayList<String> xVals;
 
+    TextView feedbackTV;
+
     String userId;
+
+    private Handler mHandler;
 
     @Nullable
     @Override
@@ -67,12 +79,16 @@ public class FragDash extends Fragment {
 
         userId = getArguments().getString("userId");
 
+        mHandler = new Handler();
+
         chart = (LineChart) view.findViewById(R.id.Lchart);//layout의 id
+        feedbackTV = (TextView) view.findViewById(R.id.feedbackTV);
 
         mTextViewResult = view.findViewById(R.id.textView_main_result);
         FragDash.GetData task = new FragDash.GetData();
 
         task.execute("http://192.168.0.27/dashquery.php?table="+userId); //IP 주소 변경
+
 
         return view;
     }
@@ -164,6 +180,9 @@ public class FragDash extends Fragment {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
+            dateArray = new ArrayList<>();
+            mArrayList = new ArrayList<>();
+
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 JSONObject item = jsonArray.getJSONObject(i);
@@ -172,9 +191,6 @@ public class FragDash extends Fragment {
                 hashMap.put(item.getString(TAG_TIMESTAMP),new studyData(item.getString(TAG_TOTALTIME),item.getInt(TAG_SCORE),item.getString(TAG_FEEDBACK)));
 
                 String d = item.getString(TAG_TIMESTAMP);
-
-                dateArray = new ArrayList<>();
-                mArrayList = new ArrayList<>();
 
                 dateArray.add(d);
                 mArrayList.add(hashMap);
@@ -210,7 +226,49 @@ public class FragDash extends Fragment {
 
         LineData data = new LineData(xVals, dataSets);
         chart.setData(data);
+        chart.setTouchEnabled(true);
+        CustomMarkerView mv = new CustomMarkerView (getContext(), R.layout.frag_dashboard);
+        chart.setMarkerView(mv);
         chart.invalidate();
+    }
+
+    class CustomMarkerView extends MarkerView {
+
+        public CustomMarkerView (Context context, int layoutResource) {
+            super(context, layoutResource);
+            // this markerview only displays a textview
+        }
+
+        // callbacks everytime the MarkerView is redrawn, can be used to update the
+        // content (user-interface)
+        @Override
+        public void refreshContent(Entry e, Highlight highlight) {
+            int i = e.getXIndex();
+            studyData sdate = mArrayList.get(i).get(dateArray.get(i));
+            mHandler.post(new FragDash.result_ex(sdate));
+        }
+
+        @Override
+        public int getXOffset(float xpos) {
+            return 0;
+        }
+
+        @Override
+        public int getYOffset(float ypos) {
+            return 0;
+        }
+    }
+
+    class result_ex implements Runnable {
+        private String feedback;
+
+        public result_ex(studyData sd){
+            this.feedback = sd.dfeedback;
+        }
+        @Override
+        public void run() {
+            feedbackTV.setText(feedback);
+        }
     }
 
 }
