@@ -1,6 +1,7 @@
 package com.example.whatthe;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,9 +20,14 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CandleEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +58,8 @@ public class Frag_Second extends Fragment {
     private static final String TAG_SCORE ="score";
     private static final String TAG_TIMESTAMP = "timestamp";
 
+    private static final String TAG_TOTALTIME = "totalTime";
+
     private TextView mTextViewResult;
     ArrayList<HashMap<String, String>> mArrayList;
     ListView mlistView;
@@ -59,11 +67,15 @@ public class Frag_Second extends Fragment {
 
     HorizontalBarChart cctchart, emochart;
     int UnCct = 0xFFC1E6FF, Cct = 0xFF508BE0;
-    int[] color;
+    int Angry = 0xFFE77474, Disgusting = 0xFF50607E, Fearful = 0xFF8268B1, Happy = 0xFFFFDFA1,
+            Sad = 0xFF96DFD7, Surprising = 0xFFEAB09E, Neutral = 0xFFB4B4B4, NoPerson = 0xFF3E3E3E;
+    int[] color, color_e;
     float[] always;
 
     String userId;
     String date;
+
+    TextView timeScore;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -74,24 +86,113 @@ public class Frag_Second extends Fragment {
         userId = getArguments().getString("userId");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         date = LocalDate.now().format(formatter);
-        //Log.d("???","http://192.168.0.27/query1.php?table="+userId+"&date="+date);
+
+        timeScore = view.findViewById(R.id.timescore);
 
         mTextViewResult = view.findViewById(R.id.textView_main_result);
         mlistView = view.findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
         GetData task = new GetData();
+        GetData_final task_final = new GetData_final();
 
         task.execute("http://192.168.0.27/query1.php?table="+userId+"&date="+date); //IP 주소 변경
+        task_final.execute("http://192.168.0.27/query1final.php?table="+userId+"&date="+date);
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
+        emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);
 
-        cctchart.setDescription(null);
+        cctchart.setDescription("집중도");
         cctchart.getAxisRight().setDrawLabels(false);
         cctchart.getXAxis().setDrawLabels(false);
         cctchart.getLegend().setEnabled(false);
+        cctchart.setTouchEnabled(false);
+
+        emochart.setDescription("감정");
+        emochart.getAxisRight().setDrawLabels(false);
+        emochart.getXAxis().setDrawLabels(false);
+        emochart.getLegend().setEnabled(false);
+        cctchart.setTouchEnabled(false);
 
 
         return view;
+    }
+
+    private class GetData_final extends AsyncTask<String, Void, String>{
+        String errorString = null;
+        
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+
+            String time = null, score = null;
+            Log.d(TAG, "response - "+result);
+
+            if(result == null){
+                timeScore.setText(errorString);
+            }else{
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+                    JSONObject j = jsonArray.getJSONObject(0);
+                    time = j.getString(TAG_TOTALTIME);
+                    score = j.getString(TAG_SCORE);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                timeScore.setText("\t  공부 시간 : "+time+"\n\n\t  집중 점수 : "+score+"점");
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params){
+            String serverURL = params[0];
+
+            try{
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.connect();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString().trim();
+            }catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+        }
     }
 
     private class GetData extends AsyncTask<String, Void, String>{
@@ -172,6 +273,7 @@ public class Frag_Second extends Fragment {
             int jsonLength = jsonArray.length();
 
             color = new int[jsonLength];
+            color_e = new int[jsonLength];
             always = new float[jsonLength];
             for(int i = 0;i<jsonLength;i++){
                 always[i] = 5f;
@@ -181,31 +283,41 @@ public class Frag_Second extends Fragment {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String emotion = item.getString(TAG_EMOTION);
-                String blink = item.getString(TAG_BLINK);
-                String gaze = item.getString(TAG_GAZE);
+                //String emotion = item.getString(TAG_EMOTION);
+                //String blink = item.getString(TAG_BLINK);
+                //String gaze = item.getString(TAG_GAZE);
 
                 if(item.getString(TAG_SCORE).contains("0")) color[i] = UnCct;
                 else color[i] = Cct;
 
-                HashMap<String,String> hashMap = new HashMap<>();
+                String emotion = item.getString(TAG_EMOTION);
+                if(emotion.contains("0")) color_e[i] = Angry;
+                else if(emotion.contains("1")) color_e[i] = Disgusting;
+                else if(emotion.contains("2")) color_e[i] = Fearful;
+                else if(emotion.contains("3")) color_e[i] = Happy;
+                else if(emotion.contains("4")) color_e[i] = Sad;
+                else if(emotion.contains("5")) color_e[i] = Surprising;
+                else if(emotion.contains("6")) color_e[i] = Neutral;
+                else color_e[i] = NoPerson;
 
-                hashMap.put(TAG_EMOTION, emotion);
-                hashMap.put(TAG_BLINK, blink);
-                hashMap.put(TAG_GAZE, gaze);
+                //HashMap<String,String> hashMap = new HashMap<>();
 
-                mArrayList.add(hashMap);
+                //hashMap.put(TAG_EMOTION, emotion);
+                //hashMap.put(TAG_BLINK, blink);
+                //hashMap.put(TAG_GAZE, gaze);
+
+                //mArrayList.add(hashMap);
             }
-
+/*
             ListAdapter adapter = new SimpleAdapter(
                     getActivity().getApplicationContext(), mArrayList, R.layout.item_list,
                     new String[]{TAG_EMOTION,TAG_BLINK, TAG_GAZE},
                     new int[]{R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_address}
-            );
+            );*/
 
             setCctGraph();
 
-            mlistView.setAdapter(adapter);
+            //mlistView.setAdapter(adapter);
 
         } catch (JSONException e) {
 
@@ -227,5 +339,15 @@ public class Frag_Second extends Fragment {
         data.setDrawValues(false);
         bardataset.setColors(color);
         cctchart.setData(data);
+
+        ArrayList<BarEntry> emo = new ArrayList<BarEntry>();
+        emo.add(new BarEntry(always,0));
+
+        BarDataSet bardataset_e = new BarDataSet(emo, "");
+        emochart.animateX(5000);
+        BarData data_e = new BarData(year, bardataset_e);
+        data_e.setDrawValues(false);
+        bardataset_e.setColors(color_e);
+        emochart.setData(data_e);
     }
 }
