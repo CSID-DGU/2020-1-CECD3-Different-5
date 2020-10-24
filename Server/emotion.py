@@ -44,4 +44,4 @@ class Emotion(object):
 
             return preds.argmax()
 
-        return -1
+        return 7

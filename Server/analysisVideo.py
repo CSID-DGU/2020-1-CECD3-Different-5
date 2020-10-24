@@ -2,7 +2,7 @@ import cv2
 import dlib
 import numpy as np
 import os
-import datetime import datetime
+import datetime
 from eye_slope import EyeandSlope
 from emotion import Emotion
 from database.connect import Database
@@ -22,21 +22,20 @@ class AnalyzeVideo(object):
         self.check_5sec = 0
         self.cnt=0
         self.userID = ''
+        self.tableName = ''
 
     # 학생의 한 회차의 영상 테이블 생성 studentID_today_cnt
-    def createOneVideo(studentID):
-        
-        today = datetime.today().strftime("%Y%m%d")
-        args = (studentID,today)
-        self.cnt = int(db.checkCnt(args))+1
-        args=(studentID,today,self.cnt)
+    def createOneVideo(self):
+        today = datetime.datetime.today().strftime("%Y%m%d")
+        args = (self.userID,today)
+        self.cnt = int(self.db.checkCnt(args))+1
+        args=(self.userID,today,self.cnt)
 
-        self.db.createOneVideo(args)
+        self.tableName = self.db.createOneVideo(args)
 
     # 한 학생 테이블 생성
-    def createStuTab(studentID):
-        self.db.createStuTab(studentID)
-    
+    def createStuTab(self):
+        self.db.createStuTab(self.userID)
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
@@ -48,14 +47,14 @@ class AnalyzeVideo(object):
             self.moment_focus[4].append(emotion)
             self.total_emotions[emotion] += 1
         else : 
-            for i, sub_result in enumerate(result) : self.moment_focus[i].append(0)
+            for t in range(4) : self.moment_focus[t].append(0)
             self.moment_focus[4].append(7) # NoPerson
             self.total_emotions[-1] += 1
 
         os.remove(fname)
 
         self.check_5sec += 1
-        if self.check_5sec > 5 :
+        if self.check_5sec >= 5 :
             self._score5moment()
             self.check_5sec = 0
 
@@ -75,15 +74,16 @@ class AnalyzeVideo(object):
             self.total_focus.append([gaze, blink, slope, hand, emotion.index(max(emotion)), (gaze+blink+slope+hand)*5])
             self.count_info[1] += 5     #졸음 시간 카운트
 
-            # 5 frame 분석한 결과를 테이블에 넣어준다. gaze, blink, slope, hand, emotion, score
-            args = self.total_focus[-1]
-            self.db.insertOneVide(args)
-
-        
         if len(self.total_focus) >= 2 :     #만약 이전 테이블이 존재한다면 비집중->집중의 상태 변화 확인으로 횟수 카운트
             if self.total_focus[-2][0] != 5 and self.total_focus[-1][0] == 5 : self.count_info[0] += 1
             if self.total_focus[-2][2] != 5 and self.total_focus[-1][2] == 5 : self.count_info[2] += 1
             if self.total_focus[-2][3] != 5 and self.total_focus[-1][3] == 5 : self.count_info[3] += 1
+
+        print("moment_focus : ", self.moment_focus)
+        print("total_focus : ", self.total_focus[-1])
+        # 5 frame 분석한 결과를 테이블에 넣어준다. gaze, blink, slope, hand, emotion, score
+        args = [self.tableName, self.total_focus[-1]]
+        self.db.insertOneVideo(args)
 
         self.moment_focus = [[] for _ in range(5)]
 
@@ -94,7 +94,7 @@ class AnalyzeVideo(object):
         total_time = datetime.datetime.now()-start_time
         maximum_emotion = self.total_emotions.index(max(self.total_emotions))
 
-        today = datetime.today().strftime("%Y%m%d")
+        today = datetime.datetime.today().strftime("%Y%m%d")
         round = self.cnt+1 # 테이블 이름 : 0~ , 회차 1~
 
         if len(self.total_focus) >= 2 :    #만약 마지막에 비집중->집중의 상태변화가 없어 비집중 횟수 카운트가 안 됐는지 확인
@@ -114,6 +114,11 @@ class AnalyzeVideo(object):
 
         # 한 영상에 대한 최종 결과 저장
         # args : timestamp, round, totalTime, emotion, blink, gaze, slope, hand, score, feedback
-        args=[today,round,total_time,maximum_emotion,self.count_info[1],self.count_info[0],self.count_info[2],self.count_info[3],total_score]
+        data=[today,round,str(total_time).split('.')[0],self.count_info[1],self.count_info[0],self.count_info[2],self.count_info[3],total_score]
+        for e in range(8) :
+            data.append(int((self.total_emotions[e]/sum(self.total_emotions))*100))
+        print(data)
+        args=[self.userID,data]
         self.db.insertFinalRes(args)
-        return total_time, maximum_emotion, "%06.2f" % total_score
+        
+        return str(total_time).split('.')[0], maximum_emotion, "%06.2f" % total_score

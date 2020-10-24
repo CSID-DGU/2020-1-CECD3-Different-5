@@ -60,12 +60,14 @@ class Database(object):
         self.curs.execute(sql)
         self.conn.commit()
 
+        return tabName
 
     # 하나의 영상에 대한 분석 결과 한 row 저장
     def insertOneVideo(self,args):
 
         # gaze, blink, slope, hand, emotion, score
         sql = "INSERT INTO "+ args[0]+ "(gaze, blink, slope, hand, emotion, score) VALUES (%s,%s,%s,%s,%s,%s)"
+        print('args : ', args)
         self.curs.execute(sql,args[1])
         self.conn.commit()
 
@@ -89,7 +91,7 @@ class Database(object):
 
         if not exist:
 
-            sql = "CREATE TABLE "+args+ "(id INT NOT NULL AUTO_INCREMENT, timestamp VARCHAR(20) NOT NULL, round INT NOT NULL, totalTime VARCHAR(20) NOT NULL,emotion INT NOT NULL, blink INT NOT NULL, gaze INT NOT NULL, slope INT NOT NULL, hand INT NOT NULL, score DECIMAL(5,2) NOT NULL, feedback VARCHAR(100) NULL, PRIMARY KEY(id));"
+            sql = "CREATE TABLE "+args+ "(id INT NOT NULL AUTO_INCREMENT, timestamp VARCHAR(20) NOT NULL, round INT NOT NULL, totalTime VARCHAR(20) NOT NULL, blink INT NOT NULL, gaze INT NOT NULL, slope INT NOT NULL, hand INT NOT NULL, score DECIMAL(5,2) NOT NULL, feedback VARCHAR(100) NULL,e0 INT NOT NULL,e1 INT NOT NULL,e2 INT NOT NULL,e3 INT NOT NULL,e4 INT NOT NULL,e5 INT NOT NULL,e6 INT NOT NULL, e7 INT NOT NULL,PRIMARY KEY(id));"
             
             self.curs.execute(sql)
             self.conn.commit()
@@ -99,7 +101,7 @@ class Database(object):
     # 학생 ID, 날짜, 영상 회차 정보 필요 + 분석 결과 정보
     def insertFinalRes(self,args):
         # args : timestamp, round, totalTime, emotion, blink, gaze, slope, hand, score, feedback
-        sql = "INSERT INTO "+args[0]+"(timestamp, round, totalTime, emotion, blink, gaze, slope, hand, score) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql = "INSERT INTO "+args[0]+"(timestamp, round, totalTime, blink, gaze, slope, hand, score, e0,e1,e2,e3,e4,e5,e6,e7) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         self.curs.execute(sql,args[1])
         self.conn.commit()
 

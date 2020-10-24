@@ -18,6 +18,8 @@ def recvall(sock, count):
     return buf
 
 def handle_client(client, addr, index, analyze) :
+    # threads = []
+
     q = 0
     print("Connect with ", addr)
     data = client.recv(12)
@@ -25,6 +27,10 @@ def handle_client(client, addr, index, analyze) :
     client_id = client_id.split("0")[-1]
     analyze.userID = client_id      #userID 저장
     print("Id : ", client_id)
+
+    analyze.createOneVideo()
+    analyze.createStuTab()
+    # 디비 테이블 생성
 
     start_time = datetime.datetime.now()
     total_time = 0
@@ -36,6 +42,8 @@ def handle_client(client, addr, index, analyze) :
         print("Receive :", length)
 
         if length == b'000000000009' :
+            # for th in threads :
+            #     th.join()
             total_time, total_emotion, total_score = analyze._break(start_time)
             break
 
@@ -61,6 +69,8 @@ def handle_client(client, addr, index, analyze) :
         t = threading.Thread(target = analyze._analyzeFace, args = (name,q, ))
         t.daemon = True
         t.start()
+        # threads.append(t)
+        t.join()
 
         q += 1
     
@@ -69,7 +79,8 @@ def handle_client(client, addr, index, analyze) :
     print(msg)
     send_data = msg.encode()
     length = len(send_data)
-    client.sendall(length.to_bytes(len(msg),byteorder='little'))
+    # print("length : ", length)
+    # client.sendall(length.to_bytes(len(bytes(length)),byteorder='little'))
     client.sendall(send_data)
 
     client.close()
