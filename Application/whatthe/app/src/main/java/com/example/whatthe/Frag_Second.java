@@ -1,7 +1,5 @@
 package com.example.whatthe;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,9 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,14 +15,9 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.CandleEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,13 +46,19 @@ public class Frag_Second extends Fragment {
     private static final String TAG_SLOPE = "slope";
     private static final String TAG_HAND = "hand";
     private static final String TAG_SCORE ="score";
-    private static final String TAG_TIMESTAMP = "timestamp";
 
     private static final String TAG_TOTALTIME = "totalTime";
+    private static final String TAG_E0 = "e0";
+    private static final String TAG_E1 = "e1";
+    private static final String TAG_E2 = "e2";
+    private static final String TAG_E3 = "e3";
+    private static final String TAG_E4 = "e4";
+    private static final String TAG_E5 = "e5";
+    private static final String TAG_E6 = "e6";
+    private static final String TAG_E7 = "e7";
 
     private TextView mTextViewResult;
     ArrayList<HashMap<String, String>> mArrayList;
-    ListView mlistView;
     String mJsonString;
 
     HorizontalBarChart cctchart, emochart;
@@ -75,28 +71,27 @@ public class Frag_Second extends Fragment {
     String userId;
     String date;
 
-    TextView timeScore;
+    TextView timeScore, emotionResult;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater Inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = Inflater.inflate(R.layout.second_study, container, false);
+        view = Inflater.inflate(R.layout.first_study, container, false);
 
         userId = getArguments().getString("userId");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         date = LocalDate.now().format(formatter);
 
         timeScore = view.findViewById(R.id.timescore);
-
+        emotionResult = view.findViewById(R.id.emotionResult);
         mTextViewResult = view.findViewById(R.id.textView_main_result);
-        mlistView = view.findViewById(R.id.listView_main_list);
         mArrayList = new ArrayList<>();
         GetData task = new GetData();
         GetData_final task_final = new GetData_final();
 
-        task.execute("http://192.168.0.27/query1.php?table="+userId+"&date="+date); //IP 주소 변경
-        task_final.execute("http://192.168.0.27/query1final.php?table="+userId+"&date="+date);
+        task.execute("http://192.168.0.75/query1.php?table="+userId+"&date="+date); //IP 주소 변경
+        task_final.execute("http://192.168.0.75/query1final.php?table="+userId+"&date="+date);
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
         emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);
@@ -111,7 +106,7 @@ public class Frag_Second extends Fragment {
         emochart.getAxisRight().setDrawLabels(false);
         emochart.getXAxis().setDrawLabels(false);
         emochart.getLegend().setEnabled(false);
-        cctchart.setTouchEnabled(false);
+        emochart.setTouchEnabled(false);
 
 
         return view;
@@ -119,7 +114,7 @@ public class Frag_Second extends Fragment {
 
     private class GetData_final extends AsyncTask<String, Void, String>{
         String errorString = null;
-        
+
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
@@ -129,11 +124,12 @@ public class Frag_Second extends Fragment {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
-            String time = null, score = null;
+            String time = null, score = null, emotion = null, gaze = null, blink = null, slope = null, hand = null;
+            String angry = null, disgusting = null, fearful = null, happy = null, sad = null, surprising = null, neutral = null, noperson = null;
             Log.d(TAG, "response - "+result);
 
-            if(result == null){
-                timeScore.setText(errorString);
+            if(result.equals("아직 공부를 안했")){
+                timeScore.setText("카메라 버튼을 눌러 공부를 시작하세요!");
             }else{
                 try {
                     JSONObject jsonObject = new JSONObject(result);
@@ -141,10 +137,27 @@ public class Frag_Second extends Fragment {
                     JSONObject j = jsonArray.getJSONObject(0);
                     time = j.getString(TAG_TOTALTIME);
                     score = j.getString(TAG_SCORE);
+                    gaze = j.getString(TAG_GAZE);
+                    blink = j.getString(TAG_BLINK);
+                    slope = j.getString(TAG_SLOPE);
+                    hand = j.getString(TAG_HAND);
+
+                    angry = j.getString(TAG_E0);
+                    disgusting = j.getString(TAG_E1);
+                    fearful = j.getString(TAG_E2);
+                    happy = j.getString(TAG_E3);
+                    sad = j.getString(TAG_E4);
+                    surprising = j.getString(TAG_E5);
+                    neutral = j.getString(TAG_E6);
+                    noperson = j.getString(TAG_E7);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                timeScore.setText("\t  공부 시간 : "+time+"\n\n\t  집중 점수 : "+score+"점");
+                timeScore.setText("\t  공부 시간 : " + time + "\n\n\t  집중 점수 : " + score + " 점");
+                mTextViewResult.setText("\t 졸음 시간 : "+blink+" 초 \n\n\t 시선 이탈 : "+gaze+" 회 \n\n\t 자세 불량 : "+slope+" 회 \n\n\t 산만한 태도 : "+hand+" 회");
+                emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
+                        +fearful+" % \n\n\t 행복 : "+happy+" % \n\n\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
+
             }
         }
 
@@ -207,11 +220,11 @@ public class Frag_Second extends Fragment {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
-            mTextViewResult.setText(result);
+            //mTextViewResult.setText(result);
             Log.d(TAG, "response - "+result);
 
             if(result == null){
-                mTextViewResult.setText(errorString);
+                //mTextViewResult.setText(errorString);
             }else{
                 mJsonString = result;
                 showResult();

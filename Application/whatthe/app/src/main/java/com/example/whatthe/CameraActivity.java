@@ -87,7 +87,7 @@ public class CameraActivity extends AppCompatActivity
 
     //소켓
     private Socket socket;
-    private String ip = "192.168.113.15"; // IP
+    private String ip = "192.168.0.56"; // IP
     //private String ip = "192.168.113.14"; // IP
     private int port = 8000;
 
@@ -180,15 +180,15 @@ public class CameraActivity extends AppCompatActivity
 
     class result_ex implements Runnable {
         private String msg;
-
+        private String[] emotion = {"Angry","Disgusting","Fearful","Happy","Sad","Surprising","Neutral","NoPerson"};
         public result_ex(String str){
             this.msg = str;
         }
         @Override
         public void run() {
             String[] array = msg.split("/");
-            Log.d("???",msg);
-            resultTV.setText("공부 시간 : "+array[0]+"\n감정 상태 : "+array[1]+"\n집중 점수 : "+array[2]);
+            //Log.d("???",msg);
+            resultTV.setText("공부 시간 : "+array[0]+"\n감정 상태 : "+emotion[Integer.parseInt(array[1])]+"\n집중 점수 : "+array[2]);
         }
     }
 
@@ -249,7 +249,6 @@ public class CameraActivity extends AppCompatActivity
                         }
 
                         byte[] student_id = getID.getBytes();
-
                         outputStream.write(student_id);
                         sendID = false;
                     }
@@ -262,20 +261,25 @@ public class CameraActivity extends AppCompatActivity
 
                     String end = "000000000009";
                     byte[] endb = end.getBytes();
+
                     if(timerFlag == false){
                         outputStream.write(endb);
 
-                        Log.d("???","0009 보냄");
+                        //Log.d("???","0009 보냄");
+                        /*
                         byte[] d = new byte[50];
-                        inputStream.read(d, 0, 50);
+                        inputStream.read(d, 0, 32);
                         ByteBuffer b = ByteBuffer.wrap(d);
                         b.order(ByteOrder.LITTLE_ENDIAN);
                         int length = b.getInt();
                         byte[] dd = new byte[length];
                         inputStream.read(dd, 0, length);
-                        result = new String(dd, "UTF-8");
+                        result = new String(dd, "UTF-8");*/
+                        byte[] buf = new byte[50];
+                        int read_Byte = inputStream.read(buf);
+                        result = new String(buf, 0, read_Byte);
                         mHandler.post(new result_ex(result));
-                        //Log.d("ClientThread", "받은 데이터 : " + result);
+                        Log.d("ClientThread", "받은 데이터 : " + result);
                     }
 
                 }

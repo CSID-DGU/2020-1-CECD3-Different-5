@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Frag_First extends Fragment {
+public class Frag_Third extends Fragment {
     private View view;
 
     private static String TAG = "phptest";
@@ -90,8 +90,8 @@ public class Frag_First extends Fragment {
         GetData task = new GetData();
         GetData_final task_final = new GetData_final();
 
-        task.execute("http://192.168.0.75/query0.php?table="+userId+"&date="+date); //IP 주소 변경
-        task_final.execute("http://192.168.0.75/query0final.php?table="+userId+"&date="+date);
+        task.execute("http://192.168.0.75/query2.php?table="+userId+"&date="+date); //IP 주소 변경
+        task_final.execute("http://192.168.0.75/query2final.php?table="+userId+"&date="+date);
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
         emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);
@@ -153,10 +153,10 @@ public class Frag_First extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                timeScore.setText("\t 공부 시간 : " + time + "\n\n\t  집중 점수 : " + score + " 점");
-                    mTextViewResult.setText("\t  졸음 시간 : "+blink+" 초 \n\n\t 시선 이탈 : "+gaze+" 회 \n\n\t 자세 불량 : "+slope+" 회 \n\n\t 산만한 태도 : "+hand+" 회");
-                    emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
-                            +fearful+" % \n\n\t 행복 : "+happy+" % \n\n\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
+                timeScore.setText("\t  공부 시간 : " + time + "\n\n\t  집중 점수 : " + score + " 점");
+                mTextViewResult.setText("\t 졸음 시간 : "+blink+" 초 \n\n\t 시선 이탈 : "+gaze+" 회 \n\n\t 자세 불량 : "+slope+" 회 \n\n\t 산만한 태도 : "+hand+" 회");
+                emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
+                        +fearful+" % \n\n\t 행복 : "+happy+" % \n\n\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
 
             }
         }

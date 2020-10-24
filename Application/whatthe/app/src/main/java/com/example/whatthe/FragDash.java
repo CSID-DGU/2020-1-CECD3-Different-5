@@ -43,6 +43,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,6 +61,20 @@ public class FragDash extends Fragment {
     private static final String TAG_SCORE = "score";
     private static final String TAG_FEEDBACK = "feedback";
 
+    private static final String TAG_BLINK ="blink";
+    private static final String TAG_GAZE = "gaze";
+    private static final String TAG_SLOPE = "slope";
+    private static final String TAG_HAND = "hand";
+
+    private static final String TAG_E0 = "e0";
+    private static final String TAG_E1 = "e1";
+    private static final String TAG_E2 = "e2";
+    private static final String TAG_E3 = "e3";
+    private static final String TAG_E4 = "e4";
+    private static final String TAG_E5 = "e5";
+    private static final String TAG_E6 = "e6";
+    private static final String TAG_E7 = "e7";
+
     private TextView mTextViewResult;
     String mJsonString;
     ArrayList<HashMap<String, studyData>> mArrayList;
@@ -70,7 +85,7 @@ public class FragDash extends Fragment {
     ArrayList<String> xVals;
     XAxis xAxis;
 
-    TextView feedbackTV;
+    TextView feedbackTV, emotionResult;
 
     String userId;
 
@@ -105,9 +120,11 @@ public class FragDash extends Fragment {
         feedbackTV = (TextView) view.findViewById(R.id.feedbackTV);
 
         mTextViewResult = view.findViewById(R.id.textView_main_result);
+        emotionResult = view.findViewById(R.id.emotionResult);
+
         FragDash.GetData task = new FragDash.GetData();
 
-        task.execute("http://192.168.0.27/dashquery.php?table="+userId); //IP 주소 변경
+        task.execute("http://192.168.0.75/dashquery.php?table="+userId); //IP 주소 변경
 
 
         return view;
@@ -125,7 +142,7 @@ public class FragDash extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            mTextViewResult.setText(result);
+            //mTextViewResult.setText(result);
             Log.d(TAG, "response - " + result);
 
             if (result == null) {
@@ -186,11 +203,27 @@ public class FragDash extends Fragment {
     class studyData{
         float dscore;
         String dtotalTime, dfeedback;
+        String dblink, dgaze, dslope, dhand;
+        String dangry, ddisgusting, dfearful, dhappy, dsad, dsurprising, dnuetral, dnoperson;
 
-        studyData(String t, float s, String f){
+        studyData(String t, float s, String f, String b, String g, String sl, String h, String e0, String e1, String e2, String e3, String e4, String e5, String e6, String e7){
             this.dtotalTime = t;
             this.dscore = s;
             this.dfeedback = f;
+
+            this.dblink = b;
+            this.dgaze = g;
+            this.dslope = sl;
+            this.dhand = h;
+            this.dangry = e0;
+            this.ddisgusting = e1;
+            this.dfearful = e2;
+            this.dhappy = e3;
+            this.dsad = e4;
+            this.dsurprising = e5;
+            this.dnuetral = e6;
+            this.dnoperson = e7;
+
         }
     }
 
@@ -208,7 +241,11 @@ public class FragDash extends Fragment {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 HashMap<String, studyData> hashMap = new HashMap<>();
-                hashMap.put(item.getString(TAG_TIMESTAMP),new studyData(item.getString(TAG_TOTALTIME),item.getInt(TAG_SCORE),item.getString(TAG_FEEDBACK)));
+                hashMap.put(item.getString(TAG_TIMESTAMP),new studyData(
+                        item.getString(TAG_TOTALTIME),item.getInt(TAG_SCORE),item.getString(TAG_FEEDBACK),item.getString(TAG_BLINK),
+                        item.getString(TAG_GAZE),item.getString(TAG_SLOPE),item.getString(TAG_HAND),item.getString(TAG_E0),
+                        item.getString(TAG_E1),item.getString(TAG_E2),item.getString(TAG_E3),item.getString(TAG_E4),
+                        item.getString(TAG_E5),item.getString(TAG_E6),item.getString(TAG_E7)));
 
                 String d = item.getString(TAG_TIMESTAMP);
 
@@ -287,22 +324,65 @@ public class FragDash extends Fragment {
     }
 
     class result_ex implements Runnable {
-        private String feedback;
+        String feedback, totalTime;
+        String blink, gaze, slope, hand;
+        String angry, disgusting, fearful, happy, sad, surprising, nuetral, noperson;
+
 
         public result_ex(studyData sd){
             this.feedback = sd.dfeedback;
+            this.totalTime = sd.dtotalTime;
+            this.blink = sd.dblink;
+            this.gaze = sd.dgaze;
+            this.slope = sd.dslope;
+            this.hand = sd.dhand;
+            this.angry = sd.dangry;
+            this.disgusting = sd.ddisgusting;
+            this.fearful = sd.dfearful;
+            this.happy = sd.dhappy;
+            this.sad = sd.dsad;
+            this.surprising = sd.dsad;
+            this.nuetral = sd.dnuetral;
+            this.noperson = sd.dnoperson;
         }
         @Override
         public void run() {
-            if(feedback.isEmpty()){
+            if (feedback.length() == 0 || feedback.contains("null")) {
                 feedbackTV.setText("피드백이 아직 없습니다.");
                 feedbackTV.setTextColor(Color.parseColor("#AAAAAA"));
-            }else {
+            } else {
                 feedbackTV.setText(feedback);
                 feedbackTV.setTextColor(Color.parseColor("#000000"));
             }
 
-        }
-    }
+            String[] time_ary = totalTime.split(",");
+            ArrayList<String> finalTime = new ArrayList<>();
+            for (int i = 0; i < time_ary.length; i++) {
+                finalTime.add(time_ary[i].trim());
+            }
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            if (!finalTime.isEmpty()) {
+                Date date = null;
+                try {
+                    date = timeFormat.parse(finalTime.get(0));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                cal.setTime(date);
 
+                for (int i = 1; i < finalTime.size(); i++) {
+                    String[] array = finalTime.get(i).split(":");
+                    cal.add(Calendar.HOUR, Integer.parseInt(array[0]));
+                    cal.add(Calendar.MINUTE, Integer.parseInt(array[1]));
+                    cal.add(Calendar.SECOND, Integer.parseInt(array[2]));
+                }
+
+                mTextViewResult.setText("\t  총 공부 시간 : " + timeFormat.format(cal.getTime()) + "\n\n\t  졸음 시간 : " + blink + " 초 \n\n\t 시선 이탈 : " + gaze + " 회 \n\n\t 자세 불량 : " + slope + " 회 \n\n\t 산만한 태도 : " + hand + " 회");
+                emotionResult.setText("\t 분노 : " + angry + " % \n\n\t 역겨움 : " + disgusting + " % \n\n\t 공포 : "
+                        + fearful + " % \n\n\t 행복 : " + happy + " % \n\n\t 슬픔 : " + sad + " % \n\n\t 놀람 : " + surprising + " % \n\n\t 무표정 : " + nuetral + " % \n\n\t 사람 없음 : " + noperson + "%");
+
+            }
+            }
+        }
 }

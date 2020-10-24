@@ -49,6 +49,7 @@ public class FragHome extends Fragment {
 
     private Fragment fragFirst;
     private Fragment fragSecond;
+    private Fragment fragThird;
 
     private ViewPager pager;
 
@@ -71,6 +72,7 @@ public class FragHome extends Fragment {
 
     private Handler mHandler;
 
+    private int currentPage = 0;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
@@ -83,7 +85,7 @@ public class FragHome extends Fragment {
 
 
         FragHome.GetData task = new FragHome.GetData();
-        task.execute("http://192.168.0.27/homequery.php?table="+userId+"&today="+date);
+        task.execute("http://192.168.0.75/homequery.php?table="+userId+"&today="+date);
 
         graph = (CircleProgressBar)view.findViewById(R.id._graph);
         studyTime = (TextView)view.findViewById(R.id.study_time);
@@ -98,25 +100,31 @@ public class FragHome extends Fragment {
 
         fragFirst = new Frag_First();
         fragSecond = new Frag_Second();
+        fragThird = new Frag_Third();
 
         fragFirst.setArguments(bundle);
         fragSecond.setArguments(bundle);
+        fragThird.setArguments(bundle);
 
         pager = (ViewPager) view.findViewById(R.id.pager);
         pager.setAdapter(new PagerAdapter(getChildFragmentManager()));
-        pager.setCurrentItem(1);
+        pager.setCurrentItem(currentPage);
 
         next.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                pager.setCurrentItem(1);
+                currentPage+=1;
+                if(currentPage>=3) currentPage = 2;
+                pager.setCurrentItem(currentPage);
             }
         });
 
         previous.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                pager.setCurrentItem(0);
+                currentPage-=1;
+                if(currentPage<0) currentPage = 0;
+                pager.setCurrentItem(currentPage);
             }
         });
 
@@ -136,13 +144,16 @@ public class FragHome extends Fragment {
             else if(position == 1){
                 return fragSecond;
             }
+            else if(position == 2){
+                return fragThird;
+            }
 
             return null;
         }
 
         @Override
         public int getCount(){
-            return 2;
+            return 3;
         }
     }
 
@@ -236,9 +247,10 @@ public class FragHome extends Fragment {
             round = 0;
             try {
                 Calendar cal = Calendar.getInstance();
-                if(finalTime != null) {
+                if(!finalTime.isEmpty()) {
                     Date date = timeFormat.parse(finalTime.get(0));
                     cal.setTime(date);
+
                     for (int i = 1; i < finalTime.size(); i++) {
                         String[] array = finalTime.get(i).split(":");
                         cal.add(Calendar.HOUR, Integer.parseInt(array[0]));
@@ -259,15 +271,15 @@ public class FragHome extends Fragment {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
+            totalTime_ary = new ArrayList<>();
+
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 JSONObject item = jsonArray.getJSONObject(i);
                 score += item.getInt(TAG_SCORE);
                 round = item.getInt(TAG_ROUND);
-                totalTime_ary = new ArrayList<>();
                 totalTime_ary.add(item.getString(TAG_TOTALTIME));
             }
-
             mHandler.post(new result_ex(score, round, totalTime_ary));
 
         } catch (JSONException e) {
