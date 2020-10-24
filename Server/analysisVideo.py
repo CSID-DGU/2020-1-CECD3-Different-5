@@ -6,24 +6,26 @@ import datetime
 from eye_slope import EyeandSlope
 from database.connect import Database
 from emotion import Emotion
-
+from database.connect import Database
 class AnalyzeVideo(object):
 
     def __init__(self):
         self.total_focus = []   #다섯 프레임 단위로 [시선, 눈깜빡임, 기울기, 손, 다섯 프레임 동안의 대표 감정, score(100점 만점)]
         self.EMOTIONS = ["Angry","Disgusting","Fearful","Happy","Sad","Surprising","Neutral","NoPerson"]
+
         self.moment_focus = [[] for _ in range(5)]  #각 요소마다 한 프레임씩 상태 저장(5프레임마다 초기화 됨), 0=비집중 / 1=집중, [[시선], [눈깜빡임], [기울기], [손], [감정]]
         self.total_emotions = [0] * len(self.EMOTIONS)  #각 프레임의 대표 감정 확인
         self.count_info = [0] * 4   #각 요소마다 비집중 횟수 카운트 [시선회피횟수, 졸음시간, 자세불량횟수, 산만함횟수]
         self.face = EyeandSlope()
         self.emotion = Emotion()
+        self.db = Database()
         self.check_5sec = 0
         self.userID = ''
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
 
-        result = self.face._analyze(frame, fname)
+        result = self.face._analyze(frame, fname) # result = [gaze, blink, slope, hand]
         if result :
             for i, sub_result in enumerate(result) : self.moment_focus[i].append(sub_result)
             emotion = self.emotion._analyze(frame)
@@ -31,7 +33,7 @@ class AnalyzeVideo(object):
             self.total_emotions[emotion] += 1
         else : 
             for i, sub_result in enumerate(result) : self.moment_focus[i].append(0)
-            self.moment_focus[4].append(7)
+            self.moment_focus[4].append(7) # NoPerson
             self.total_emotions[-1] += 1
 
         os.remove(fname)
@@ -62,7 +64,13 @@ class AnalyzeVideo(object):
             if self.total_focus[-2][2] != 5 and self.total_focus[-1][2] == 5 : self.count_info[2] += 1
             if self.total_focus[-2][3] != 5 and self.total_focus[-1][3] == 5 : self.count_info[3] += 1
 
+        # 5 frame 분석 정보 tmpResult 테이블에 저장(emotion, blink, gaze, slope, hand 순서)
+        for i in range(len(self.moment_focus[0])):
+            args=(self.moment_focus[-1][i],self.moment_focus[1][i],self.moment_focus[0][i],self.moment_focus[2][i],self.moment_focus[3][i])
+            db.insertTmpResData(args)
+
         self.moment_focus = [[] for _ in range(5)]
+
 
     def _break(self, start_time) :
         total_time = datetime.datetime.now()-start_time
