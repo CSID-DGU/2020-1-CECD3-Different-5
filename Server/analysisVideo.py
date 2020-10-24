@@ -18,6 +18,7 @@ class AnalyzeVideo(object):
         self.face = EyeandSlope()
         self.emotion = Emotion()
         self.check_5sec = 0
+        self.userID = ''
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
@@ -81,5 +82,5 @@ class AnalyzeVideo(object):
         for score in self.total_focus :
             total_score += score[-1]
         if len(self.total_focus) : total_score /= len(self.total_focus)
-
+        print(self.userID)
         return total_time, maximum_emotion, "%06.2f" % total_score
