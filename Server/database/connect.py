@@ -67,7 +67,6 @@ class Database(object):
 
         # gaze, blink, slope, hand, emotion, score
         sql = "INSERT INTO "+ args[0]+ "(gaze, blink, slope, hand, emotion, score) VALUES (%s,%s,%s,%s,%s,%s)"
-        print('args : ', args)
         self.curs.execute(sql,args[1])
         self.conn.commit()
 

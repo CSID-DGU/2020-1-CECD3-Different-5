@@ -79,8 +79,6 @@ class AnalyzeVideo(object):
             if self.total_focus[-2][2] != 5 and self.total_focus[-1][2] == 5 : self.count_info[2] += 1
             if self.total_focus[-2][3] != 5 and self.total_focus[-1][3] == 5 : self.count_info[3] += 1
 
-        print("moment_focus : ", self.moment_focus)
-        print("total_focus : ", self.total_focus[-1])
         # 5 frame 분석한 결과를 테이블에 넣어준다. gaze, blink, slope, hand, emotion, score
         args = [self.tableName, self.total_focus[-1]]
         self.db.insertOneVideo(args)
@@ -117,7 +115,6 @@ class AnalyzeVideo(object):
         data=[today,round,str(total_time).split('.')[0],self.count_info[1],self.count_info[0],self.count_info[2],self.count_info[3],total_score]
         for e in range(8) :
             data.append(int((self.total_emotions[e]/sum(self.total_emotions))*100))
-        print(data)
         args=[self.userID,data]
         self.db.insertFinalRes(args)
         

@@ -42,8 +42,6 @@ def handle_client(client, addr, index, analyze) :
         print("Receive :", length)
 
         if length == b'000000000009' :
-            # for th in threads :
-            #     th.join()
             total_time, total_emotion, total_score = analyze._break(start_time)
             break
 
@@ -69,7 +67,6 @@ def handle_client(client, addr, index, analyze) :
         t = threading.Thread(target = analyze._analyzeFace, args = (name,q, ))
         t.daemon = True
         t.start()
-        # threads.append(t)
         t.join()
 
         q += 1
