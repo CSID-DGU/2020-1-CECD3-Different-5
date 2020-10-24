@@ -90,5 +90,5 @@ class AnalyzeVideo(object):
         for score in self.total_focus :
             total_score += score[-1]
         if len(self.total_focus) : total_score /= len(self.total_focus)
-        print(self.userID)
+
         return total_time, maximum_emotion, "%06.2f" % total_score
