@@ -20,19 +20,23 @@ def recvall(sock, count):
 def handle_client(client, addr, index, analyze) :
     q = 0
     print("Connect with ", addr)
-    # data = client.recv(12)
-    # stringdate = data.decode()
-    # print("Id ", stringdate)
+    data = client.recv(12)
+    client_id = data.decode()
+    print("Id : ", client_id)
+
     start_time = datetime.datetime.now()
     total_time = 0
     total_emotion = ""
     total_score = 0
+
     while True :
         length = recvall(client, 12)
         print("Receive :", length)
+
         if length == b'000000000009' :
             total_time, total_emotion, total_score = analyze._break(start_time)
             break
+
         stringData = recvall(client, int(length))
         data = np.fromstring(stringData, dtype = 'uint8')
 
@@ -47,6 +51,7 @@ def handle_client(client, addr, index, analyze) :
                 # for d in range(3) :
                 b[i, k, 0] = data[t]
                 t += 1
+
         print("Done", q)
         name = str(index)+'photo'+str(q)+'.jpg'
 
@@ -58,7 +63,7 @@ def handle_client(client, addr, index, analyze) :
         q += 1
     
     print('Sending...')
-    msg = str(total_time)+ '/' + total_emotion +  '/' + str(total_score)
+    msg = str(total_time)+ '/' + str(total_emotion) +  '/' + str(total_score)
     print(msg)
     send_data = msg.encode()
     length = len(send_data)
@@ -67,7 +72,7 @@ def handle_client(client, addr, index, analyze) :
 
     client.close()
 
-HOST='192.168.113.15'
+HOST='192.168.0.56'
 PORT=8000
 
 #TCP 사용
