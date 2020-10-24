@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #from analysisVideo import AnalyzeVideo
 from database.connect import Database
 from datetime import datetime
@@ -27,20 +26,15 @@ print(tabName)
 data = (4,5,3,2,5,19,"timestamp")
 args = (tabName,data)
 db.insertOneVideo(args)
-=======
-from analysisVideo import AnalyzeVideo
 
-analyze = AnalyzeVideo()
 
-fname = 'image/sample3.jpg'
-# analyze._analyzeHand(fname)
-analyze._analyzeFace(fname, 0)
-# from database.connect import Database
-# import datetime
-# db = Database()
+# 학생 한명의 모든 영상 저장하는 테이블 생성
+args=studentID
+db.createStuTab(args)
 
-# args = (datetime.datetime.now(),1,0,0,1,0)
-# db.insertData(args)
+# 최종 분석 결과 저장
+# args : timestamp, round, totalTime, score, feedback
 
-# db.selectAllData()
->>>>>>> de12efc313bcf0a82dda7736e6a8f6ff9b5ef0b8
+# data = (timestamp, round, totalTime, score, feedback) # 해당 데이터 나중에 넣어주기
+args = (studentID, data)
+db.insertFinalRes(args)
