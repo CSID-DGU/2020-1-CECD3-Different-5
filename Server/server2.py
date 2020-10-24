@@ -22,6 +22,8 @@ def handle_client(client, addr, index, analyze) :
     print("Connect with ", addr)
     data = client.recv(12)
     client_id = data.decode()
+    client_id = client_id.split("0")[-1]
+    analyze.userID = client_id      #userID 저장
     print("Id : ", client_id)
 
     start_time = datetime.datetime.now()

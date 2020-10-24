@@ -21,6 +21,7 @@ class AnalyzeVideo(object):
         self.db = Database()
         self.check_5sec = 0
         self.cnt=0
+        self.userID = ''
 
     # 학생의 한 회차의 영상 테이블 생성 studentID_today_cnt
     def createOneVideo(studentID):
