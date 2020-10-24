@@ -5,28 +5,31 @@ import os
 import datetime
 from eye_slope import EyeandSlope
 from emotion import Emotion
-
+from database.connect import Database
 class AnalyzeVideo(object):
 
     def __init__(self):
         self.total_focus = []
         self.EMOTIONS = ["Angry","Disgusting","Fearful","Happy","Sad","Surprising","Neutral","NoPerson"]
-        self.moment_focus = [[] for _ in range(4)]
+        self.moment_focus = [[] for _ in range(5)] # 고침(emotion 추가)
         self.total_emotions = [0] * len(self.EMOTIONS)
         self.face = EyeandSlope()
         self.emotion = Emotion()
+        self.db = Database()
         self.check_5sec = 0
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
 
-        result = self.face._analyze(frame, fname)
+        result = self.face._analyze(frame, fname) # result = [gaze, blink, slope, hand]
         if result :
             for i, sub_result in enumerate(result) : self.moment_focus[i].append(sub_result)
             emotion = self.emotion._analyze(frame)
+            self.moment_focus[4].append(emotion)
             self.total_emotions[emotion] += 1
         else : 
             for i, sub_result in enumerate(result) : self.moment_focus[i].append(0)
+            self.moment_focus[4].append(7) # NoPerson
             self.total_emotions[-1] += 1
 
         os.remove(fname)
@@ -46,7 +49,13 @@ class AnalyzeVideo(object):
 
             self.total_focus.append([gaze, blink, slope, hand])
 
-        self.moment_focus = [[] for _ in range(4)]
+        # 5 frame 분석 정보 tmpResult 테이블에 저장(emotion, blink, gaze, slope, hand 순서)
+        for i in range(len(self.moment_focus[0])):
+            args=(self.moment_focus[-1][i],self.moment_focus[1][i],self.moment_focus[0][i],self.moment_focus[2][i],self.moment_focus[3][i])
+            db.insertTmpResData(args)
+
+        self.moment_focus = [[] for _ in range(5)]
+
 
     def _break(self, start_time) :
         total_time = datetime.datetime.now()-start_time
