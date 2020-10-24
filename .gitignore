@@ -1,2 +1,2 @@
 Server/trained_models
-Server/database
+Server/database/config.py
