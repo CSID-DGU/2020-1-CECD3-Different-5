@@ -2,11 +2,11 @@ import cv2
 import dlib
 import numpy as np
 import os
-import datetime
+import datetime import datetime
 from eye_slope import EyeandSlope
-from database.connect import Database
 from emotion import Emotion
 from database.connect import Database
+
 class AnalyzeVideo(object):
 
     def __init__(self):
@@ -20,6 +20,22 @@ class AnalyzeVideo(object):
         self.emotion = Emotion()
         self.db = Database()
         self.check_5sec = 0
+        self.cnt=0
+
+    # 학생의 한 회차의 영상 테이블 생성 studentID_today_cnt
+    def createOneVideo(studentID):
+        
+        today = datetime.today().strftime("%Y%m%d")
+        args = (studentID,today)
+        self.cnt = int(db.checkCnt(args))+1
+        args=(studentID,today,self.cnt)
+
+        self.db.createOneVideo(args)
+
+    # 한 학생 테이블 생성
+    def createStuTab(studentID):
+        self.db.createStuTab(studentID)
+    
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
@@ -57,23 +73,28 @@ class AnalyzeVideo(object):
 
             self.total_focus.append([gaze, blink, slope, hand, emotion.index(max(emotion)), (gaze+blink+slope+hand)*5])
             self.count_info[1] += 5     #졸음 시간 카운트
+
+            # 5 frame 분석한 결과를 테이블에 넣어준다. gaze, blink, slope, hand, emotion, score
+            args = self.total_focus[-1]
+            self.db.insertOneVide(args)
+
         
         if len(self.total_focus) >= 2 :     #만약 이전 테이블이 존재한다면 비집중->집중의 상태 변화 확인으로 횟수 카운트
             if self.total_focus[-2][0] != 5 and self.total_focus[-1][0] == 5 : self.count_info[0] += 1
             if self.total_focus[-2][2] != 5 and self.total_focus[-1][2] == 5 : self.count_info[2] += 1
             if self.total_focus[-2][3] != 5 and self.total_focus[-1][3] == 5 : self.count_info[3] += 1
 
-        # 5 frame 분석 정보 tmpResult 테이블에 저장(emotion, blink, gaze, slope, hand 순서)
-        for i in range(len(self.moment_focus[0])):
-            args=(self.moment_focus[-1][i],self.moment_focus[1][i],self.moment_focus[0][i],self.moment_focus[2][i],self.moment_focus[3][i])
-            db.insertTmpResData(args)
-
         self.moment_focus = [[] for _ in range(5)]
+
+        # args : emotion, blink, gaze, slope, hand, score
 
 
     def _break(self, start_time) :
         total_time = datetime.datetime.now()-start_time
         maximum_emotion = self.total_emotions.index(max(self.total_emotions))
+
+        today = datetime.today().strftime("%Y%m%d")
+        round = self.cnt+1 # 테이블 이름 : 0~ , 회차 1~
 
         if len(self.total_focus) >= 2 :    #만약 마지막에 비집중->집중의 상태변화가 없어 비집중 횟수 카운트가 안 됐는지 확인
             if self.total_focus[-2][0] != 5 and self.total_focus[-1][0] != 5 : self.count_info[0] += 1
@@ -90,4 +111,8 @@ class AnalyzeVideo(object):
             total_score += score[-1]
         if len(self.total_focus) : total_score /= len(self.total_focus)
 
+        # 한 영상에 대한 최종 결과 저장
+        # args : timestamp, round, totalTime, emotion, blink, gaze, slope, hand, score, feedback
+        args=[today,round,total_time,maximum_emotion,self.count_info[1],self.count_info[0],self.count_info[2],self.count_info[3],total_score]
+        self.db.insertFinalRes(args)
         return total_time, maximum_emotion, "%06.2f" % total_score
