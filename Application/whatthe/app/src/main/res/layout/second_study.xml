@@ -48,7 +48,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="526dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="20dp"
@@ -68,21 +68,12 @@
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
-                <ListView
-                    android:id="@+id/listView_main_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="6"
-                    android:padding="5dp" />
-
                 <TextView
                     android:id="@+id/textView_main_result"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="5dp"
-                    android:layout_weight="4"
-                    android:padding="5dp" />
+                    android:layout_weight="4" />
 
             </LinearLayout>
 
@@ -109,7 +100,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/emotionResult"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="" />

@@ -106,10 +106,9 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/emotionResult"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="\t분노 20%\t\t\t\t 기쁨 15%\n" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </LinearLayout>
