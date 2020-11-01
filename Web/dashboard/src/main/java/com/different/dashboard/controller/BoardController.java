@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
  
 import com.different.dashboard.dto.BoardDto;
+import com.different.dashboard.dto.DetailDetailDto;
 import com.different.dashboard.form.BoardForm;
+import com.different.dashboard.form.DetailDetailForm;
 import com.different.dashboard.service.BoardService;
+import com.different.dashboard.dto.DetailDto;
+import com.different.dashboard.form.DetailForm;
 
 @Controller
 @RequestMapping(value = "/board")
@@ -58,5 +62,31 @@ public class BoardController {
  
         return boardList;
     }*/
+    
+    //학생 일별 학습기록
+    @RequestMapping(value="/detail")
+    public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    	
+    	return "board/detail";
+    	
+    }
+
+    @RequestMapping(value = "/getDetail")
+    @ResponseBody
+    public List<DetailDto> getDetail(HttpServletRequest request, HttpServletResponse response, DetailForm detailForm) throws Exception {
+
+        List<DetailDto> detailList = boardService.getDetails(detailForm);
+ 
+        return detailList;
+    }
+    
+    @RequestMapping(value = "/getDetailDetail")
+    @ResponseBody
+    public List<DetailDetailDto> getDetailDetail(HttpServletRequest request, HttpServletResponse response, DetailDetailForm detailDetailForm) throws Exception {
+
+        List<DetailDetailDto> detailDetailList = boardService.getDetailDetails(detailDetailForm);
+ 
+        return detailDetailList;
+    }
     
 }

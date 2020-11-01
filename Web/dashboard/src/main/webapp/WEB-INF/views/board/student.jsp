@@ -423,8 +423,6 @@
   <script src="<spring:url value='/resources/vendor/datatables/jquery.dataTables.min.js'/>"></script>
   <script src="<spring:url value='/resources/vendor/datatables/dataTables.bootstrap4.min.js'/>"></script>
   <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
-  <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
-  <script src="<spring:url value='/resources/js/demo/chart-bar-demo.js'/>"></script>
 
   <!-- Page level custom scripts -->
   <script src="<spring:url value='/resources/js/demo/studies-datatables-demo.js'/>"></script>
