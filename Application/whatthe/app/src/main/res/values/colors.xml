@@ -14,4 +14,10 @@
     <color name="disgusting">#50607E</color>
     <color name="angry">#E77474</color>
     <color name="noperson">#3E3E3E</color>
+
+    <color name="cct">#76BBB6</color>
+    <color name="cct60">#8FC2A0</color>
+    <color name="cct40">#A9C98B</color>
+    <color name="cct20">#C1D076</color>
+    <color name="ucct">#DDD761</color>
 </resources>

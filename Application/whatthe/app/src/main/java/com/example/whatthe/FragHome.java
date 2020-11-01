@@ -17,6 +17,8 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dinuscxj.progressbar.CircleProgressBar;
@@ -72,6 +74,8 @@ public class FragHome extends Fragment {
 
     private Handler mHandler;
 
+    SwipeRefreshLayout layout;
+
     private int currentPage = 0;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -83,9 +87,20 @@ public class FragHome extends Fragment {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         date = LocalDate.now().format(formatter);
 
+        layout = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                refresh();
+
+                layout.setRefreshing(false);
+
+            }
+        });
 
         FragHome.GetData task = new FragHome.GetData();
-        task.execute("http://192.168.0.75/homequery.php?table="+userId+"&today="+date);
+        task.execute("http://172.30.1.12/homequery.php?table="+userId+"&today="+date);
 
         graph = (CircleProgressBar)view.findViewById(R.id._graph);
         studyTime = (TextView)view.findViewById(R.id.study_time);
@@ -287,5 +302,10 @@ public class FragHome extends Fragment {
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    private void refresh(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.detach(this).attach(this).commit();
     }
 }

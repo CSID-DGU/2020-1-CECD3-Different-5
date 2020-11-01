@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-set(pathPROJECT C:/Users/hyoj_/OneDrive/Desktop/2020-1-CECD3-Different-5/Application/whatthe) # 수정필요
+set(pathPROJECT C:/Users/Administrator/2020-1-CECD3-Different-5/Application/whatthe) # 수정필요
 set(pathOPENCV ${pathPROJECT}/sdk) # 수정 필요
 set(pathLIBOPENCV_JAVA ${pathOPENCV}/native/libs/${ANDROID_ABI}/libopencv_java4.so)
 

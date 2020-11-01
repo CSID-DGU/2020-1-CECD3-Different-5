@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -18,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.MarkerView;
@@ -85,11 +88,15 @@ public class FragDash extends Fragment {
     ArrayList<String> xVals;
     XAxis xAxis;
 
-    TextView feedbackTV, emotionResult;
+    TextView feedbackTV, emotionResult, emotionResult2;
+
+    LinearLayout eee;
 
     String userId;
 
     private Handler mHandler;
+
+    SwipeRefreshLayout layout;
 
     @Nullable
     @Override
@@ -108,6 +115,18 @@ public class FragDash extends Fragment {
         xAxis.setAxisMinValue(-0.03f);
         xAxis.setAxisMaxValue(-0.03f);
 
+        layout = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                refresh();
+
+                layout.setRefreshing(false);
+
+            }
+        });
+
         YAxis yAxisRight = chart.getAxisRight(); //Y축의 오른쪽면 설정
         yAxisRight.setDrawLabels(false);
         yAxisRight.setDrawAxisLine(false);
@@ -121,10 +140,14 @@ public class FragDash extends Fragment {
 
         mTextViewResult = view.findViewById(R.id.textView_main_result);
         emotionResult = view.findViewById(R.id.emotionResult);
+        emotionResult2 = view.findViewById(R.id.emotionResult2);
+
+        eee = view.findViewById(R.id.eee);
+        eee.setVisibility(View.GONE);
 
         FragDash.GetData task = new FragDash.GetData();
 
-        task.execute("http://192.168.0.75/dashquery.php?table="+userId); //IP 주소 변경
+        task.execute("http://172.30.1.12/dashquery.php?table="+userId); //IP 주소 변경
 
 
         return view;
@@ -325,25 +348,25 @@ public class FragDash extends Fragment {
 
     class result_ex implements Runnable {
         String feedback, totalTime;
-        String blink, gaze, slope, hand;
-        String angry, disgusting, fearful, happy, sad, surprising, nuetral, noperson;
+        long blink, gaze, slope, hand;
+        Double angry, disgusting, fearful, happy, sad, surprising, nuetral, noperson;
 
 
         public result_ex(studyData sd){
             this.feedback = sd.dfeedback;
             this.totalTime = sd.dtotalTime;
-            this.blink = sd.dblink;
-            this.gaze = sd.dgaze;
-            this.slope = sd.dslope;
-            this.hand = sd.dhand;
-            this.angry = sd.dangry;
-            this.disgusting = sd.ddisgusting;
-            this.fearful = sd.dfearful;
-            this.happy = sd.dhappy;
-            this.sad = sd.dsad;
-            this.surprising = sd.dsad;
-            this.nuetral = sd.dnuetral;
-            this.noperson = sd.dnoperson;
+            this.blink = Math.round(Double.parseDouble(sd.dblink));
+            this.gaze = Math.round(Double.parseDouble(sd.dgaze));
+            this.slope = Math.round(Double.parseDouble(sd.dslope));
+            this.hand = Math.round(Double.parseDouble(sd.dhand));
+            this.angry = Math.round(Double.parseDouble(sd.dangry)*10)/10.0;
+            this.disgusting = Math.round(Double.parseDouble(sd.ddisgusting)*10)/10.0;
+            this.fearful = Math.round(Double.parseDouble(sd.dfearful)*10)/10.0;
+            this.happy = Math.round(Double.parseDouble(sd.dhappy)*10)/10.0;
+            this.sad = Math.round(Double.parseDouble(sd.dsad)*10)/10.0;
+            this.surprising = Math.round(Double.parseDouble(sd.dsurprising)*10)/10.0;
+            this.nuetral = Math.round(Double.parseDouble(sd.dnuetral)*10)/10.0;
+            this.noperson = Math.round(Double.parseDouble(sd.dnoperson)*10)/10.0;
         }
         @Override
         public void run() {
@@ -378,11 +401,18 @@ public class FragDash extends Fragment {
                     cal.add(Calendar.SECOND, Integer.parseInt(array[2]));
                 }
 
-                mTextViewResult.setText("\t  총 공부 시간 : " + timeFormat.format(cal.getTime()) + "\n\n\t  졸음 시간 : " + blink + " 초 \n\n\t 시선 이탈 : " + gaze + " 회 \n\n\t 자세 불량 : " + slope + " 회 \n\n\t 산만한 태도 : " + hand + " 회");
-                emotionResult.setText("\t 분노 : " + angry + " % \n\n\t 역겨움 : " + disgusting + " % \n\n\t 공포 : "
-                        + fearful + " % \n\n\t 행복 : " + happy + " % \n\n\t 슬픔 : " + sad + " % \n\n\t 놀람 : " + surprising + " % \n\n\t 무표정 : " + nuetral + " % \n\n\t 사람 없음 : " + noperson + "%");
+                mTextViewResult.setText("\t 총 공부 시간 : " + timeFormat.format(cal.getTime()) + "\n\n\t 졸음 시간 : " + blink + " 초 \n\n\t 시선 이탈 : " + gaze + " 회 \n\n\t 자세 불량 : " + slope + " 회 \n\n\t 산만한 태도 : " + hand + " 회");
+                emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
+                        +fearful+" % \n\n\t 행복 : "+happy+" %");
+                emotionResult2.setText("\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+nuetral+" % \n\n\t 사람 없음 : "+noperson+ "%");
 
+                eee.setVisibility(View.VISIBLE);
             }
             }
         }
+
+    private void refresh(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.detach(this).attach(this).commit();
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.whatthe;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -87,7 +88,7 @@ public class CameraActivity extends AppCompatActivity
 
     //소켓
     private Socket socket;
-    private String ip = "192.168.0.56"; // IP
+    private String ip = "172.30.1.21"; // IP
     //private String ip = "192.168.113.14"; // IP
     private int port = 8000;
 
@@ -133,6 +134,7 @@ public class CameraActivity extends AppCompatActivity
 
         resultTV = (TextView) findViewById(R.id.resultView);
         Button btnEnd = (Button) findViewById(R.id.btnEnd);
+        final int value = 0;
         btnEnd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
