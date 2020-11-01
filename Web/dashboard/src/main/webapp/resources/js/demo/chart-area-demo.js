@@ -32,7 +32,9 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["1월", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: [{% for item in ${score} %}
+    			{{item.timeStamp}}, {% endfor %}
+    		],
     datasets: [{
       label: "Earnings",
       lineTension: 0.3,
@@ -46,7 +48,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [0, 10, 5, 15, 10, 20, 15, 25, 20, 30, 25, 40],
+      data: scoreData,
     }],
   },
   options: {

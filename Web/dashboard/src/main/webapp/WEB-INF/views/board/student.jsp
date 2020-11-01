@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
 <%@taglib  prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -299,8 +300,8 @@
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="chart-pie pt-4">
-                	<p/>나이: 8세
-                	<p/>교육과정: 초등학교 1학년
+                  	<p/>이름 : ${stuInfo.student_name}
+                	<p/>교육과정: ${stuInfo.student_curri}
                 	<p/>소속: 혜정혜정초등학교
                   
                   </div>
@@ -314,7 +315,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">날짜별 상세보기</h6>
+              <h6 class="m-0 font-weight-bold text-primary">회차별 상세보기</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -322,36 +323,38 @@
                   <thead>
                     <tr>
                       <th>날짜</th>
+                      <th>회차</th>     
                       <th>총 학습시간</th>
                       <th>총점</th>
                       <th>상세보기</th>
                     </tr>
                   </thead>
+                  <c:forEach var="dto" items="${list}">
+                  	<tr>
+                  		<td> ${dto.timeStamp }</td>
+                  		<td>${dto.round }</td>
+                  		<td>${dto.totalTime }</td>
+                  		<td>${dto.score }</td>
+                  		<td><button onclick="location.href='detail?day=${dto.timeStamp}&round=${round}&id=${stuInfo.student_ID}'" style="align:left; 
+						  background-color:#2F504E;
+						  color:white;
+						  border:0;
+						  outline:0;
+						  width:80px;
+						  height:20px;
+						  font-size:10px;
+						  align:right;
+						  margin-top:-8px;">상세보기</button></td></td>
+                  </c:forEach>
                   <tfoot>
                     <tr>
                       <th>날짜</th>
+                      <th>회차</th>
                       <th>총 학습시간</th>
                       <th>총점</th>
                       <th>상세보기</th>
                     </tr>
                   </tfoot>
-                  <tbody>
-                    <tr>
-                      <td>2020.03.02</td>
-                      <td>30min</td>
-                      <td>80</td>
-                      <td><button style="align:left; 
-					  background-color:#2F504E;
-					  color:white;
-					  border:0;
-					  outline:0;
-					  width:80px;
-					  height:20px;
-					  font-size:10px;
-					  align:right;
-					  margin-top:-8px;">상세보기</button></td></td>
-                    </tr>
-                  </tbody>
                 </table>
               </div>
             </div>
@@ -422,13 +425,117 @@
   <!-- Page level plugins -->
   <script src="<spring:url value='/resources/vendor/datatables/jquery.dataTables.min.js'/>"></script>
   <script src="<spring:url value='/resources/vendor/datatables/dataTables.bootstrap4.min.js'/>"></script>
-  <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
+<<<<<<< HEAD
+  <!-- <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script> -->
   <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
   <script src="<spring:url value='/resources/js/demo/chart-bar-demo.js'/>"></script>
+=======
+  <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
+>>>>>>> aeb00bca3c69c184be0a1cf3e7a66e5ea43558f0
 
-  <!-- Page level custom scripts -->
-  <script src="<spring:url value='/resources/js/demo/studies-datatables-demo.js'/>"></script>
 
+  <script src="<spring:url value='/resources/js/demo/result.js'/>"></script>
+
+<script>
+
+	var dayData=[];
+	var scoreData=[];
+	
+	var tmpData = $(model.score);
+	console.log("@@@@@@@@@@@@@@@"+tmpData);
+	var ctx = document.getElementById("myAreaChart");
+	var myLineChart = new Chart(ctx, {
+	  type: 'line',
+	  data: {
+	    labels: [{% for item in score %}
+        "{{item.timeStamp}}",
+        {% endfor %}],
+	    datasets: [{
+	      label: "Earnings",
+	      lineTension: 0.3,
+	      backgroundColor: "rgba(78, 115, 223, 0.05)",
+	      borderColor: "rgba(78, 115, 223, 1)",
+	      pointRadius: 3,
+	      pointBackgroundColor: "rgba(78, 115, 223, 1)",
+	      pointBorderColor: "rgba(78, 115, 223, 1)",
+	      pointHoverRadius: 3,
+	      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+	      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+	      pointHitRadius: 10,
+	      pointBorderWidth: 2,
+	      data: [{% for item in score %}
+          "{{item.score}}",
+          {% endfor %}],
+	    }],
+	  },
+	  options: {
+	    maintainAspectRatio: false,
+	    layout: {
+	      padding: {
+	        left: 10,
+	        right: 25,
+	        top: 25,
+	        bottom: 0
+	      }
+	    },
+	    scales: {
+	      xAxes: [{
+	        time: {
+	          unit: 'date'
+	        },
+	        gridLines: {
+	          display: false,
+	          drawBorder: false
+	        },
+	        ticks: {
+	          maxTicksLimit: 7
+	        }
+	      }],
+	      yAxes: [{
+	        ticks: {
+	          maxTicksLimit: 5,
+	          padding: 10,
+	          // Include a dollar sign in the ticks
+	          callback: function(value, index, values) {
+	            return number_format(value);
+	          }
+	        },
+	        gridLines: {
+	          color: "rgb(234, 236, 244)",
+	          zeroLineColor: "rgb(234, 236, 244)",
+	          drawBorder: false,
+	          borderDash: [2],
+	          zeroLineBorderDash: [2]
+	        }
+	      }],
+	    },
+	    legend: {
+	      display: false
+	    },
+	    tooltips: {
+	      backgroundColor: "rgb(255,255,255)",
+	      bodyFontColor: "#858796",
+	      titleMarginBottom: 10,
+	      titleFontColor: '#6e707e',
+	      titleFontSize: 14,
+	      borderColor: '#dddfeb',
+	      borderWidth: 1,
+	      xPadding: 15,
+	      yPadding: 15,
+	      displayColors: false,
+	      intersect: false,
+	      mode: 'index',
+	      caretPadding: 10,
+	      callbacks: {
+	        label: function(tooltipItem, chart) {
+	          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+	          return datasetLabel  + number_format(tooltipItem.yLabel);
+	        }
+	      }
+	    }
+	  }
+	});
+</script>
 </body>
 
 </html>
