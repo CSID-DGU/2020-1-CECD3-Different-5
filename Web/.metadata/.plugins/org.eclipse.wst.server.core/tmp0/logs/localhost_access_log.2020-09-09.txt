@@ -1,8 +1,0 @@
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/detail HTTP/1.1" 200 17364
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/css/sb-admin-2.min.css HTTP/1.1" 304 -
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/vendor/fontawesome-free/css/all.min.css HTTP/1.1" 304 -
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/vendor/jquery/jquery.min.js HTTP/1.1" 304 -
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/vendor/jquery-easing/jquery.easing.min.js HTTP/1.1" 304 -
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/vendor/chart.js/Chart.min.js HTTP/1.1" 304 -
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/vendor/bootstrap/js/bootstrap.bundle.min.js HTTP/1.1" 304 -
-0:0:0:0:0:0:0:1 - - [09/Sep/2020:14:06:09 +0900] "GET /webpage/resources/vendor/fontawesome-free/webfonts/fa-solid-900.woff2 HTTP/1.1" 304 -
