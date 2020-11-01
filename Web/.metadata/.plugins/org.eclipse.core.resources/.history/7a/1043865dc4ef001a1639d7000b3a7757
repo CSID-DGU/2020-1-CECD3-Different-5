@@ -1,7 +1,0 @@
-package com.different.webpage;
-
-import javax.validation.constraints.Size;
-import org.hiebernate.validator.constraints.NotEmpty;
-
-public class authenticate {
-}
