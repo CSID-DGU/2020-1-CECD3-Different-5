@@ -1,6 +1,8 @@
 package com.different.dashboard.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
  
@@ -23,6 +25,11 @@ public class BoardDao {
         return sqlSession.selectList(NAMESPACE + ".getBoardList");
     }
     
-    
+    public BoardDto getStuInfo(String id) throws Exception{
+    	
+    	Map<String,Object> params = new HashMap<String,Object>();
+    	params.put("id", id);
+    	return sqlSession.selectOne(NAMESPACE+".getStuInfo",params);
+    }
     
 }

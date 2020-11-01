@@ -7,6 +7,6 @@
 <title>Index</title>
 </head>
 <body>
-Index
+<jsp:forward page="board/search.jsp"/>
 </body>
 </html>

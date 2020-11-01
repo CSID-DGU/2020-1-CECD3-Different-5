@@ -40,7 +40,7 @@ function getBoardList(){
                 str += "<td>"+ studentName +"</td>";
                 str += "<td>"+ studentID +"</td>";
                 str += "<td>"+ studentCurri +"</td>";
-                str += "<td><button style=\"align:left; background-color:#2F504E; color:white; border:0; outline:0; width:80px; height:20px; font-size:10px; align:right; margin-top:-8px; \">상세보기</button></td>";                
+                str += "<td><button onclick=\"location.href='student?id="+studentID+"'\" style=\"align:left; background-color:#2F504E; color:white; border:0; outline:0; width:80px; height:20px; font-size:10px; align:right; margin-top:-8px; \">상세보기</button></td>";                
                 str += "</tr>";
                 
             } 
