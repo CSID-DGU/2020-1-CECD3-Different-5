@@ -15,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
  
 import com.different.dashboard.dto.BoardDto;
+import com.different.dashboard.dto.DetailDetailDto;
 import com.different.dashboard.form.BoardForm;
+import com.different.dashboard.form.DetailDetailForm;
 import com.different.dashboard.service.BoardService;
 import com.different.dashboard.dto.ResultDto;
 import com.different.dashboard.form.ResultForm;
+import com.different.dashboard.dto.DetailDto;
+import com.different.dashboard.form.DetailForm;
 
 @Controller
 @RequestMapping(value = "/board")
@@ -29,7 +33,7 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
  
-    //ÇÐ»ý
+    //ï¿½Ð»ï¿½
     @RequestMapping( value = "/search")
     public String search(HttpServletRequest request, HttpServletResponse response) throws Exception{
         
@@ -46,7 +50,7 @@ public class BoardController {
     }
     
     
-    //ÇÐ»ý ÇÐ½À±â·Ï
+    //ï¿½Ð»ï¿½ ï¿½Ð½ï¿½ï¿½ï¿½ï¿½
     @RequestMapping(value="/student")
     public String student(@RequestParam String id, Model model) throws Exception{
     	
@@ -59,7 +63,7 @@ public class BoardController {
     	return "board/student";  	
     }
     
-    //ÇÐ»ý ÀÏº° ÇÐ½À±â·Ï
+    //ï¿½Ð»ï¿½ ï¿½Ïºï¿½ ï¿½Ð½ï¿½ï¿½ï¿½ï¿½
     @RequestMapping(value="/detail")
     public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception{
     	
@@ -85,5 +89,31 @@ public class BoardController {
  
         return boardList;
     }*/
+    
+    //ï¿½Ð»ï¿½ ï¿½Ïºï¿½ ï¿½Ð½ï¿½ï¿½ï¿½ï¿½
+    @RequestMapping(value="/detail")
+    public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    	
+    	return "board/detail";
+    	
+    }
+
+    @RequestMapping(value = "/getDetail")
+    @ResponseBody
+    public List<DetailDto> getDetail(HttpServletRequest request, HttpServletResponse response, DetailForm detailForm) throws Exception {
+
+        List<DetailDto> detailList = boardService.getDetails(detailForm);
+ 
+        return detailList;
+    }
+    
+    @RequestMapping(value = "/getDetailDetail")
+    @ResponseBody
+    public List<DetailDetailDto> getDetailDetail(HttpServletRequest request, HttpServletResponse response, DetailDetailForm detailDetailForm) throws Exception {
+
+        List<DetailDetailDto> detailDetailList = boardService.getDetailDetails(detailDetailForm);
+ 
+        return detailDetailList;
+    }
     
 }

@@ -12,5 +12,37 @@
     
     </select>
     
+    <select id="getDetails" parameterType="com.different.dashboard.form.DetailForm" resultType="com.different.dashboard.dto.DetailDto">
+    
+        SELECT ROUND
+        	 , TOTALTIME
+        	 , SCORE
+        	 , FEEDBACK
+        	 , BLINK
+        	 , GAZE
+        	 , SLOPE
+        	 , HAND
+        	 , E0
+        	 , E1
+        	 , E2
+        	 , E3
+        	 , E4
+        	 , E5
+        	 , E6
+        	 , E7        	   
+       	FROM different.AAA WHERE TIMESTAMP='20201017'
+    </select>
+    
+    <select id="getDetailDetails" parameterType="com.different.dashboard.form.DetailDetailForm" resultType="com.different.dashboard.dto.DetailDetailDto">
+       	SELECT ID
+       		 , EMOTION
+       		 , BLINK
+       		 , GAZE
+       		 , SLOPE
+       		 , HAND
+       		 , SCORE
+    	FROM different.AAA_20201017_0
+    </select>
+    
     
 </mapper>

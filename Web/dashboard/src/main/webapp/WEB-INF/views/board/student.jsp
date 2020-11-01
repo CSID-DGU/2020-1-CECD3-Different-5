@@ -425,9 +425,13 @@
   <!-- Page level plugins -->
   <script src="<spring:url value='/resources/vendor/datatables/jquery.dataTables.min.js'/>"></script>
   <script src="<spring:url value='/resources/vendor/datatables/dataTables.bootstrap4.min.js'/>"></script>
+<<<<<<< HEAD
   <!-- <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script> -->
   <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
   <script src="<spring:url value='/resources/js/demo/chart-bar-demo.js'/>"></script>
+=======
+  <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
+>>>>>>> aeb00bca3c69c184be0a1cf3e7a66e5ea43558f0
 
 
   <script src="<spring:url value='/resources/js/demo/result.js'/>"></script>

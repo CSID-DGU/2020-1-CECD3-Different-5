@@ -19,7 +19,7 @@ public class BoardService {
    @Autowired
    private ResultDao resultDao;
 
-   //ÇÐ»ý ¸ñ·Ï Á¶È¸
+   //ï¿½Ð»ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
    public List<BoardDto> getBoardList(BoardForm boardForm) throws Exception {
 
        return boardDao.getBoardList(boardForm);
@@ -39,7 +39,7 @@ public class BoardService {
 	   return resultDao.getScorePerDay(id);
    }
    
-   //ÇÐ»ý ÇÐ½À±â·Ï Á¶È¸
+   //ï¿½Ð»ï¿½ ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
  /*  public BoardDto getStudiesList(BoardForm boardForm) throws Exception {
 	   
        BoardDto boardDto = new BoardDto();
@@ -63,6 +63,18 @@ public class BoardService {
    }*/
    
    
-   //ÇÐ½À »ó¼¼±â·Ï Á¶È¸
+   //ï¿½Ð½ï¿½ ï¿½ó¼¼±ï¿½ï¿½ ï¿½ï¿½È¸
+   //ï¿½Ð»ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+   public List<DetailDto> getDetails(DetailForm DetailForm) throws Exception {
+	   
+       return boardDao.getDetails(DetailForm);
+       
+   }
+   
+   public List<DetailDetailDto> getDetailDetails(DetailDetailForm detailDetailForm) throws Exception {
+	   
+       return boardDao.getDetailDetails(detailDetailForm);
+       
+   }
    
 }

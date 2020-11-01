@@ -1,3 +1,8 @@
+<!-- 	앞페이지에서 넘겨받아야 할 데이터: 이름/총점/날짜/학생 코드
+		학생 DB 찾을 때 필요한 것: 학생코드/
+		학생DB에서 받아야 할 것: 총학습시간/학습횟수/주요감정/피드백/졸음횟수-blink/비집중-gaze,slope,hand
+		학생학습DB에서 받야아 할 것: 시간/시간당 점수
+		-->
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
@@ -267,7 +272,7 @@
 
           <!-- Page Heading -->
           <h1 class="h3 mb-2 text-gray-800">박아리<pre>2020년 02월 03일</pre></h1>
-          <p class="mb-4"> 총점 : 80</p>
+          <p class="mb-4" id="totalavg"> </p>
 
           <!-- Content Row -->
           <div class="row">
@@ -284,7 +289,6 @@
                     <canvas id="myAreaChart"></canvas>
                   </div>
                   <hr>
-                  Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
                 </div>
               </div>
 
@@ -299,13 +303,13 @@
                     <canvas id="myPieChart"></canvas>
                   </div>
                   <hr>
-                  	박아리 학생의 학습태도는 <code>좋음</code> 입니다.
+                  	박아리 학생의 학습태도는 <code></code> 입니다.
                 </div>
               </div>
 
             </div>
 
-            <!-- Donut Chart -->
+            <!-- 학습 태도 평가 -->
             <div class="col-xl-4 col-lg-5">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -314,16 +318,10 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <div class="chart-pie pt-4">
-                  	<p/>총점:
-                  	<p/>총 학습시간: 
-                  	<p/>멍: 
-                  	<p/>자리이탈: 
-                  	<p/>이상행동: 
+                  <div class="study-analysis">
                   	
                   </div>
                   <hr>
-                  Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
                 </div>
               </div>
             </div>
@@ -394,8 +392,9 @@
   <script src="<spring:url value='/resources/vendor/chart.js/Chart.min.js'/>"></script>
 
   <!-- Page level custom scripts -->
-  <script src="<spring:url value='/resources/js/demo/chart-area-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/chart-area-demo2.js'/>"></script>
   <script src="<spring:url value='/resources/js/demo/chart-pie-demo.js'/>"></script>
+  <script src="<spring:url value='/resources/js/demo/analysis.js'/>"></script>
 
 </body>
 
