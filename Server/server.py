@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import time
 import threading
-from analysisVideo import AnalyzeVideo
+from analysis_video import AnalyzeVideo
 import datetime
 
 #socket에서 수신한 버퍼를 반환하는 함수
@@ -18,19 +18,19 @@ def recvall(sock, count):
     return buf
 
 def handle_client(client, addr, index, analyze) :
-    # threads = []
-
-    q = 0
     print("Connect with ", addr)
+    
     data = client.recv(12)
     client_id = data.decode()
     client_id = client_id.split("0")[-1]
     analyze.userID = client_id      #userID 저장
     print("Id : ", client_id)
 
-    analyze.createOneVideo()
-    analyze.createStuTab()
+    analyze._createOneVideo()
+    analyze._createStuTab()
     # 디비 테이블 생성
+
+    q = 0
 
     start_time = datetime.datetime.now()
     total_time = 0
@@ -76,13 +76,11 @@ def handle_client(client, addr, index, analyze) :
     print(msg)
     send_data = msg.encode()
     length = len(send_data)
-    # print("length : ", length)
-    # client.sendall(length.to_bytes(len(bytes(length)),byteorder='little'))
     client.sendall(send_data)
 
     client.close()
 
-HOST='192.168.0.56'
+HOST='172.30.1.21'
 PORT=8000
 
 #TCP 사용

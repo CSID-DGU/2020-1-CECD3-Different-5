@@ -1,30 +1,24 @@
-# 눈깜빡임, 시선, 얼굴 기울기, 손 인식
-
+# 눈깜빡임, 시선, 얼굴 기울기, 손, 감정 인식
 import dlib
 import cv2
-import os
 import numpy as np
 import math
+from keras.preprocessing.image import img_to_array
 from gaze_tracking import GazeTracking
 from hand import Hand
 
-class EyeandSlope(object):
-
-    def __init__(self):
-        cwd = os.path.abspath(os.path.dirname(__file__))
-        model_path = os.path.abspath(os.path.join(cwd, "trained_models/shape_predictor_68_face_landmarks.dat"))
-
-        self.detector = dlib.get_frontal_face_detector()
-        self.predictor = dlib.shape_predictor(model_path)
-        self.hand = Hand()
+class AnalyzeFrame(object):
+    def __init__(self, models):
+        self.detector = models.detector
+        self.predictor = models.predictor
+        self.emotion_classifier=models.emotion_classifier
+        self.hand = Hand(models)
 
     def _gazeTracking(self,frame): 
-
         gaze = GazeTracking(self.detector, self.predictor)
         gaze.refresh(frame)
 
         frame = gaze.annotated_frame()
-        text = ""
         result_blink = 1
         result_gaze = 1
 
@@ -64,13 +58,15 @@ class EyeandSlope(object):
         return result_slope
 
     def _handTracking(self, fname) :
-        return self.hand.inputImg(fname)
+        return self.hand._inputImg(fname)
 
     def _analyze(self, frame, fname):
+        #얼굴 인식 수행
         faces = self.detector(frame)
         result = []
+
         for face in faces:
-            x1 = face.left()
+            x1=face.left()
             y1=face.top()
             x2=face.right()
             y2=face.bottom()
@@ -88,22 +84,29 @@ class EyeandSlope(object):
                 else : result.append(1)
             else : result.append(0)
 
+            if result :
+                result.append(self._analyzeEmotion(frame, [x1, y1, x2, y2]))
+
         return result
 
     def _calculateAngle(self, center, mouth, eyes) :
-        # vector_left = [eyes[0][0]-center[0], eyes[0][1]-center[1]]
-        # vector_right = [eyes[1][0]-center[0], eyes[1][1]-center[1]]
-        # vector_mouse = [mouth[0]-center[0], mouth[1]-center[1]]
-        # left_length = math.sqrt(vector_left[0]**2 + vector_left[1]**2)
-        # right_length = math.sqrt(vector_right[0]**2 + vector_right[1]**2)
-        # mouth_length = math.sqrt(vector_mouse[0]**2 + vector_mouse[1]**2)
-        # print(vector_left, vector_right)
-        # left_angle = abs(math.asin((vector_mouse[0]*vector_left[1]-vector_mouse[1]*vector_left[0])/(mouth_length*left_length)))*(180/math.pi)
-        # right_angle = abs(math.asin((vector_mouse[0]*vector_right[1]-vector_mouse[1]*vector_right[0])/(mouth_length*right_length)))*(180/math.pi)
-        
         dy = center[1]-mouth[1]
         dx = center[0]-mouth[0]
         angle = abs(math.atan(dy/dx))*(180/math.pi)
 
         if 90*0.7 <= angle <= 90*1.3 : return 1
         else : return 0
+
+    def _analyzeEmotion(self, frame, face_location) :
+        # 이미지 사이즈 조정 for neural network
+        roi = frame[face_location[1]:face_location[3], face_location[0]:face_location[2]]
+        roi = cv2.resize(roi, (48, 48))
+        roi = roi.astype("float") / 255.0
+        roi = img_to_array(roi)
+        roi = np.expand_dims(roi, axis=0)
+                    
+        # Emotion predict
+        preds = self.emotion_classifier.predict(roi)[0]
+        # emotion_probability = np.max(preds) #대표하는 감정
+
+        return preds.argmax()

@@ -3,29 +3,31 @@ import dlib
 import numpy as np
 import os
 import datetime
-from eye_slope import EyeandSlope
-from emotion import Emotion
+from load_model import LoadModel
+from analysis_frame import AnalyzeFrame
 from database.connect import Database
 
 class AnalyzeVideo(object):
-
     def __init__(self):
+        #필요한 모델들을 로드
+        self.models = LoadModel()
+        self.face = AnalyzeFrame(self.models)
+        self.db = Database()
+
         self.total_focus = []   #다섯 프레임 단위로 [시선, 눈깜빡임, 기울기, 손, 다섯 프레임 동안의 대표 감정, score(100점 만점)]
         self.EMOTIONS = ["Angry","Disgusting","Fearful","Happy","Sad","Surprising","Neutral","NoPerson"]
 
         self.moment_focus = [[] for _ in range(5)]  #각 요소마다 한 프레임씩 상태 저장(5프레임마다 초기화 됨), 0=비집중 / 1=집중, [[시선], [눈깜빡임], [기울기], [손], [감정]]
         self.total_emotions = [0] * len(self.EMOTIONS)  #각 프레임의 대표 감정 확인
         self.count_info = [0] * 4   #각 요소마다 비집중 횟수 카운트 [시선회피횟수, 졸음시간, 자세불량횟수, 산만함횟수]
-        self.face = EyeandSlope()
-        self.emotion = Emotion()
-        self.db = Database()
+
         self.check_5sec = 0
         self.cnt=0
         self.userID = ''
         self.tableName = ''
 
     # 학생의 한 회차의 영상 테이블 생성 studentID_today_cnt
-    def createOneVideo(self):
+    def _createOneVideo(self):
         today = datetime.datetime.today().strftime("%Y%m%d")
         args = (self.userID,today)
         self.cnt = int(self.db.checkCnt(args))+1
@@ -34,18 +36,19 @@ class AnalyzeVideo(object):
         self.tableName = self.db.createOneVideo(args)
 
     # 한 학생 테이블 생성
-    def createStuTab(self):
+    def _createStuTab(self):
         self.db.createStuTab(self.userID)
 
     def _analyzeFace(self, fname, p):
         frame = cv2.imread(fname, cv2.IMREAD_GRAYSCALE)
 
-        result = self.face._analyze(frame, fname) # result = [gaze, blink, slope, hand]
+        result = self.face._analyze(frame, fname) # result = [gaze, blink, slope, hand, emotion]
+        #얼굴이 인식된 경우
         if result :
-            for i, sub_result in enumerate(result) : self.moment_focus[i].append(sub_result)
-            emotion = self.emotion._analyze(frame)
-            self.moment_focus[4].append(emotion)
-            self.total_emotions[emotion] += 1
+            for i in range(4) : self.moment_focus[i].append(result[i])
+            self.moment_focus[4].append(result[4])
+            self.total_emotions[result[4]] += 1
+        #얼굴이 인식되지 않은 경우
         else : 
             for t in range(4) : self.moment_focus[t].append(0)
             self.moment_focus[4].append(7) # NoPerson
@@ -53,6 +56,7 @@ class AnalyzeVideo(object):
 
         os.remove(fname)
 
+        #5장의 프레임을 모두 인식했을 경우 집중 여부 판단 수행
         self.check_5sec += 1
         if self.check_5sec >= 5 :
             self._score5moment()
