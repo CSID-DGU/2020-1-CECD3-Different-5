@@ -143,8 +143,8 @@ public class Frag_Third extends Fragment {
         GetData task = new GetData();
         GetData_final task_final = new GetData_final();
 
-        task.execute("http://172.30.1.12/query2.php?table="+userId+"&date="+date); //IP 주소 변경
-        task_final.execute("http://172.30.1.12/query2final.php?table="+userId+"&date="+date);
+        task.execute("http://172.30.1.12/query.php?table="+userId+"&date="+date+"&num=2"); //IP 주소 변경
+        task_final.execute("http://172.30.1.12/queryfinal.php?table="+userId+"&date="+date+"&num=2");
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
         emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);
