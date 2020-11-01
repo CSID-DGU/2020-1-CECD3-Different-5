@@ -7,6 +7,8 @@
 <title>Index</title>
 </head>
 <body>
-<jsp:forward page="board/search.jsp"/>
+<script>
+location.href="/dashboard/board/search";
+</script>
 </body>
 </html>

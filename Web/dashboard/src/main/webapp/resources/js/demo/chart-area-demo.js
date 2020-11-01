@@ -32,9 +32,7 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: [{% for item in ${score} %}
-    			{{item.timeStamp}}, {% endfor %}
-    		],
+    labels: [],
     datasets: [{
       label: "Earnings",
       lineTension: 0.3,

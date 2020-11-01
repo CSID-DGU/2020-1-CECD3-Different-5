@@ -33,7 +33,7 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
  
-    //�л�
+    //占싻삼옙
     @RequestMapping( value = "/search")
     public String search(HttpServletRequest request, HttpServletResponse response) throws Exception{
         
@@ -50,7 +50,7 @@ public class BoardController {
     }
     
     
-    //�л� �н����
+    //占싻삼옙 占싻쏙옙占쏙옙占�
     @RequestMapping(value="/student")
     public String student(@RequestParam String id, Model model) throws Exception{
     	
@@ -63,34 +63,7 @@ public class BoardController {
     	return "board/student";  	
     }
     
-    //�л� �Ϻ� �н����
-    @RequestMapping(value="/detail")
-    public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception{
-    	
-    	return "board/detail";
-    	
-    }
-//    @RequestMapping(value="/getResult")
-//    @ResponseBody
-//    public List<ResultDto> getResult(HttpServletRequest request, HttpServletResponse response, ResultForm resultForm) throws Exception {
-//
-//    	String id = request.getParameter("id");
-//    	System.out.println("???????????????????"+id);
-//        List<ResultDto> resultList = boardService.getInfo(resultForm);
-// 
-//        return resultList;
-//    }
-    
-    /*@RequestMapping(value = "/getStudent")
-    @ResponseBody
-    public List<BoardDto> getStudies(HttpServletRequest request, HttpServletResponse response, BoardForm boardForm) throws Exception {
-
-        List<BoardDto> boardList = boardService.getStudiesList(boardForm);
- 
-        return boardList;
-    }*/
-    
-    //�л� �Ϻ� �н����
+    //占싻삼옙 占싹븝옙 占싻쏙옙占쏙옙占�
     @RequestMapping(value="/detail")
     public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception{
     	

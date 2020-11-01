@@ -44,8 +44,7 @@
     	FROM different.AAA_20201017_0
     </select>
     
-    <select id = "getStuInfo" parameterType="map" resultType="com.different.dashboard.dto.BoardDto">
-    
+    <select id = "getStuInfo" parameterType="map" resultType="com.different.dashboard.dto.BoardDto">  
     	SELECT STUDENT_NAME, STUDENT_ID, STUDENT_CURRI
     	FROM different.STUDENTTEST
     	WHERE student_id='${id}'
