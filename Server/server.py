@@ -80,8 +80,8 @@ def handle_client(client, addr, index, analyze) :
 
     client.close()
 
-HOST='172.30.1.21'
-PORT=8000
+HOST='3.16.89.9'
+PORT=8080
 
 #TCP 사용
 s = socket.socket(socket.AF_INET)
