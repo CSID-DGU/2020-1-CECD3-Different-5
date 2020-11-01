@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class LoginRequest extends StringRequest {
 
-    final static private String URL = "http://192.168.0.75/login.php";//IP 주소 변경
+    final static private String URL = "http://172.30.1.12/login.php";//IP 주소 변경
     private Map<String, String> parameters;
 
     //생성자

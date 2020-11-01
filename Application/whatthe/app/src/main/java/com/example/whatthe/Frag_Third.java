@@ -3,10 +3,13 @@ package com.example.whatthe;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,9 +31,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -62,7 +68,7 @@ public class Frag_Third extends Fragment {
     String mJsonString;
 
     HorizontalBarChart cctchart, emochart;
-    int UnCct = 0xFFC1E6FF, Cct = 0xFF508BE0;
+    int UnCct = 0xFFDDD761, Cct20 = 0xFFC1D076, Cct40 = 0xFFA9C98B, Cct60 = 0xFF8FC2A0, Cct = 0xFF76BBB6;
     int Angry = 0xFFE77474, Disgusting = 0xFF50607E, Fearful = 0xFF8268B1, Happy = 0xFFFFDFA1,
             Sad = 0xFF96DFD7, Surprising = 0xFFEAB09E, Neutral = 0xFFB4B4B4, NoPerson = 0xFF3E3E3E;
     int[] color, color_e;
@@ -71,7 +77,15 @@ public class Frag_Third extends Fragment {
     String userId;
     String date;
 
-    TextView timeScore, emotionResult;
+    TextView timeScore, emotionResult, emotionResult2;
+    Button _study, _emotion;
+    LinearLayout eee;
+    boolean _study_open = false, _emotion_open = false;
+
+    Handler _study_view, _emotion_view;
+
+    String time = "0", score = "0", emotion = "0", gaze = "0", blink = "0", slope = "0", hand = "0";
+    String angry = "0", disgusting = "0", fearful = "0", happy = "0", sad = "0", surprising = "0", neutral = "0", noperson = "0";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -85,13 +99,52 @@ public class Frag_Third extends Fragment {
 
         timeScore = view.findViewById(R.id.timescore);
         emotionResult = view.findViewById(R.id.emotionResult);
+        emotionResult2 = view.findViewById(R.id.emotionResult2);
         mTextViewResult = view.findViewById(R.id.textView_main_result);
+
+        eee = view.findViewById(R.id.eee);
+
+        mTextViewResult.setVisibility(View.GONE);
+
+        eee.setVisibility(View.GONE);
+
+        _emotion_view = new Handler();
+        _study_view = new Handler();
+
+        _study = (Button)view.findViewById(R.id.add_study);
+        _study.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(_study_open == false){
+                    _study_open = true;
+                    _study_view.post(new Frag_Third.result_study());
+                }else{
+                    _study_open = false;
+                    _study_view.post(new Frag_Third.result_study());
+                }
+            }
+        });
+
+        _emotion = (Button)view.findViewById(R.id.add_emotion);
+        _emotion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(_emotion_open == false){
+                    _emotion_open = true;
+                    _emotion_view.post(new Frag_Third.result_emotion());
+                }else{
+                    _emotion_open = false;
+                    _emotion_view.post(new Frag_Third.result_emotion());
+                }
+            }
+        });
+
         mArrayList = new ArrayList<>();
         GetData task = new GetData();
         GetData_final task_final = new GetData_final();
 
-        task.execute("http://192.168.0.75/query2.php?table="+userId+"&date="+date); //IP 주소 변경
-        task_final.execute("http://192.168.0.75/query2final.php?table="+userId+"&date="+date);
+        task.execute("http://172.30.1.12/query2.php?table="+userId+"&date="+date); //IP 주소 변경
+        task_final.execute("http://172.30.1.12/query2final.php?table="+userId+"&date="+date);
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
         emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);
@@ -124,12 +177,11 @@ public class Frag_Third extends Fragment {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
-            String time = null, score = null, emotion = null, gaze = null, blink = null, slope = null, hand = null;
-            String angry = null, disgusting = null, fearful = null, happy = null, sad = null, surprising = null, neutral = null, noperson = null;
             Log.d(TAG, "response - "+result);
 
             if(result.equals("아직 공부를 안했")){
                 timeScore.setText("카메라 버튼을 눌러 공부를 시작하세요!");
+                time = score = gaze = blink = slope = hand = angry = disgusting = fearful = happy = sad = surprising = neutral = noperson = "0";
             }else{
                 try {
                     JSONObject jsonObject = new JSONObject(result);
@@ -153,10 +205,10 @@ public class Frag_Third extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                timeScore.setText("\t  공부 시간 : " + time + "\n\n\t  집중 점수 : " + score + " 점");
-                mTextViewResult.setText("\t 졸음 시간 : "+blink+" 초 \n\n\t 시선 이탈 : "+gaze+" 회 \n\n\t 자세 불량 : "+slope+" 회 \n\n\t 산만한 태도 : "+hand+" 회");
-                emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
-                        +fearful+" % \n\n\t 행복 : "+happy+" % \n\n\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
+                timeScore.setText("\t 공부 시간 : " + time + "\n\n\t  집중 점수 : " + score + " 점");
+                //mTextViewResult.setText("\t  졸음 시간 : "+blink+" 초 \n\n\t 시선 이탈 : "+gaze+" 회 \n\n\t 자세 불량 : "+slope+" 회 \n\n\t 산만한 태도 : "+hand+" 회");
+                //emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
+                //      +fearful+" % \n\n\t 행복 : "+happy+" % \n\n\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
 
             }
         }
@@ -300,7 +352,12 @@ public class Frag_Third extends Fragment {
                 //String blink = item.getString(TAG_BLINK);
                 //String gaze = item.getString(TAG_GAZE);
 
-                if(item.getString(TAG_SCORE).contains("0")) color[i] = UnCct;
+                int ccts = Integer.parseInt(item.getString(TAG_SCORE));
+
+                if(ccts<20) color[i] = UnCct;
+                else if(ccts >= 20 && ccts < 40) color[i] = Cct20;
+                else if(ccts >= 40 && ccts < 60) color[i] = Cct40;
+                else if(ccts >= 60 && ccts < 80) color[i] = Cct60;
                 else color[i] = Cct;
 
                 String emotion = item.getString(TAG_EMOTION);
@@ -362,5 +419,45 @@ public class Frag_Third extends Fragment {
         data_e.setDrawValues(false);
         bardataset_e.setColors(color_e);
         emochart.setData(data_e);
+    }
+
+    class result_study implements Runnable {
+
+        public result_study(){
+        }
+        @Override
+        public void run() {
+            if(_study_open == true){
+                _study.setText("접기");
+                mTextViewResult.setText("\t 졸음 시간 : "+blink+" 초 \n\n\t 시선 이탈 : "+gaze+" 회 \n\n\t 자세 불량 : "+slope+" 회 \n\n\t 산만한 태도 : "+hand+" 회");
+                mTextViewResult.setVisibility(View.VISIBLE);
+            }else{
+                _study.setText("더보기");
+                mTextViewResult.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    class result_emotion implements Runnable {
+
+        public result_emotion(){
+        }
+        @Override
+        public void run() {
+            if(_emotion_open == true){
+                _emotion.setText("접기");
+                emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
+                        +fearful+" % \n\n\t 행복 : "+happy+" %");
+                emotionResult2.setText("\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
+
+                eee.setVisibility(View.VISIBLE);
+
+            }else{
+
+                _emotion.setText("더보기");
+
+                eee.setVisibility(View.GONE);
+            }
+        }
     }
 }
