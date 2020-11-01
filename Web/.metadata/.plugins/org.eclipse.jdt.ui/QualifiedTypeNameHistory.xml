@@ -7,4 +7,6 @@
     <fullyQualifiedTypeName name="java.awt.List"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="ch.qos.logback.classic.Logger"/>
+    <fullyQualifiedTypeName name="com.different.dashboard.form.DetailDetailForm"/>
+    <fullyQualifiedTypeName name="com.different.dashboard.dto.DetailDetailDto"/>
 </qualifiedTypeNameHistroy>

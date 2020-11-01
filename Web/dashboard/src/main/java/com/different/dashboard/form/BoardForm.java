@@ -24,5 +24,7 @@ public class BoardForm {
 	public void setStudent_curri(String student_curri) {
 		this.student_curri = student_curri;
 	}
+	
+	
 
 }
