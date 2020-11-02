@@ -100,7 +100,7 @@ public class FragHome extends Fragment {
         });
 
         FragHome.GetData task = new FragHome.GetData();
-        task.execute("http://172.30.1.12/homequery.php?table="+userId+"&today="+date);
+        task.execute("http://172.30.1.38/homequery.php?table="+userId+"&today="+date);
 
         graph = (CircleProgressBar)view.findViewById(R.id._graph);
         studyTime = (TextView)view.findViewById(R.id.study_time);

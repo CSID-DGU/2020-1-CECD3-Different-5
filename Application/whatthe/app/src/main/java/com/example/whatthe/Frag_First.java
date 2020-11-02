@@ -143,8 +143,8 @@ public class Frag_First extends Fragment {
         GetData task = new GetData();
         GetData_final task_final = new GetData_final();
 
-        task.execute("http://172.30.1.12/query.php?table="+userId+"&date="+date+"&num=0"); //IP 주소 변경
-        task_final.execute("http://172.30.1.12/queryfinal.php?table="+userId+"&date="+date+"&num=0");
+        task.execute("http://172.30.1.38/query.php?table="+userId+"&date="+date+"&num=0"); //IP 주소 변경
+        task_final.execute("http://172.30.1.38/queryfinal.php?table="+userId+"&date="+date+"&num=0");
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
         emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);
@@ -154,13 +154,14 @@ public class Frag_First extends Fragment {
         cctchart.getXAxis().setDrawLabels(false);
         cctchart.getLegend().setEnabled(false);
         cctchart.setTouchEnabled(false);
+        cctchart.getXAxis().setDrawLabels(false);
 
         emochart.setDescription("감정");
         emochart.getAxisRight().setDrawLabels(false);
         emochart.getXAxis().setDrawLabels(false);
         emochart.getLegend().setEnabled(false);
         emochart.setTouchEnabled(false);
-
+        emochart.getXAxis().setDrawLabels(false);
 
         return view;
     }

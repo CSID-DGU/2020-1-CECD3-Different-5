@@ -29,9 +29,13 @@
         android:layout_marginRight="50dp"
         android:layout_weight="100"
         android:background="@drawable/round_rec"
+        android:fontFamily="sans-serif-black"
         android:paddingLeft="100dp"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:text="집중도를 계산 중입니다... 잠시만 기다려주세요."
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:visibility="gone" />
 
     <LinearLayout
