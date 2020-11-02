@@ -12,7 +12,7 @@
     
     </select>
     
-    <select id="getDetails" parameterType="com.different.dashboard.form.DetailForm" resultType="com.different.dashboard.dto.DetailDto">
+    <select id="getDetails" parameterType="map" resultType="com.different.dashboard.dto.DetailDto">
     
         SELECT ROUND
         	 , TOTALTIME
@@ -30,10 +30,10 @@
         	 , E5
         	 , E6
         	 , E7        	   
-       	FROM different.AAA WHERE TIMESTAMP='20201017'
+       	FROM different.${id} WHERE TIMESTAMP='${timeStamp}'
     </select>
     
-    <select id="getDetailDetails" parameterType="com.different.dashboard.form.DetailDetailForm" resultType="com.different.dashboard.dto.DetailDetailDto">
+    <select id="getDetailDetails" parameterType="map" resultType="com.different.dashboard.dto.DetailDetailDto">
        	SELECT ID
        		 , EMOTION
        		 , BLINK
@@ -41,7 +41,7 @@
        		 , SLOPE
        		 , HAND
        		 , SCORE
-    	FROM different.AAA_20201017_0
+    	FROM different.${id}"_${timeStamp}_${round-1}
     </select>
     
     <select id = "getStuInfo" parameterType="map" resultType="com.different.dashboard.dto.BoardDto">  
