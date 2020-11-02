@@ -32,7 +32,7 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: [],
+    labels: ["2020/10/17","2020/10/24","2020/11/01"],
     datasets: [{
       label: "Earnings",
       lineTension: 0.3,
@@ -46,7 +46,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: scoreData,
+      data: ["75","10","40.33"]
     }],
   },
   options: {

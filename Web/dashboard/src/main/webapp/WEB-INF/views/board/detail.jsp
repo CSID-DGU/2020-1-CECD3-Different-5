@@ -271,7 +271,7 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">박아리<pre>2020년 02월 03일</pre></h1>
+          <h1 class="h3 mb-2 text-gray-800">박아리<pre>2020년 10월 17일</pre></h1>
           <p class="mb-4" id="totalavg"> </p>
 
           <!-- Content Row -->
