@@ -143,8 +143,8 @@ public class Frag_Second extends Fragment {
         GetData task = new GetData();
         GetData_final task_final = new GetData_final();
 
-        task.execute("http://http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/query.php?table="+userId+"&date="+date+"&num=1"); //IP 주소 변경
-        task_final.execute("http://http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/queryfinal.php?table="+userId+"&date="+date+"&num=1");
+        task.execute("http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/query.php?table="+userId+"&date="+date+"&num=1"); //IP 주소 변경
+        task_final.execute("http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/queryfinal.php?table="+userId+"&date="+date+"&num=1");
 
         cctchart = (HorizontalBarChart) view.findViewById(R.id.concentrationChart);
         emochart = (HorizontalBarChart) view.findViewById(R.id.emotionChart);

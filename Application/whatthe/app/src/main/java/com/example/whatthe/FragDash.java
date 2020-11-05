@@ -147,7 +147,7 @@ public class FragDash extends Fragment {
 
         FragDash.GetData task = new FragDash.GetData();
 
-        task.execute("http://http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/dashquery.php?table="+userId); //IP 주소 변경
+        task.execute("http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/dashquery.php?table="+userId); //IP 주소 변경
 
 
         return view;

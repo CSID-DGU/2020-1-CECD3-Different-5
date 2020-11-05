@@ -100,7 +100,7 @@ public class FragHome extends Fragment {
         });
 
         FragHome.GetData task = new FragHome.GetData();
-        task.execute("http://http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/homequery.php?table="+userId+"&today="+date);
+        task.execute("http://ec2-3-16-89-9.us-east-2.compute.amazonaws.com/homequery.php?table="+userId+"&today="+date);
 
         graph = (CircleProgressBar)view.findViewById(R.id._graph);
         studyTime = (TextView)view.findViewById(R.id.study_time);
