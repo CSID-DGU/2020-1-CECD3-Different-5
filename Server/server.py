@@ -80,7 +80,7 @@ def handle_client(client, addr, index, analyze) :
 
     client.close()
 
-HOST='3.16.89.9'
+HOST='18.191.113.34'
 PORT=8080
 
 #TCP 사용
