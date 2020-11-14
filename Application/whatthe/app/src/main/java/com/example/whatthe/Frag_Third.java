@@ -450,7 +450,7 @@ public class Frag_Third extends Fragment {
                 _emotion.setText("접기");
                 emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
                         +fearful+" % \n\n\t 행복 : "+happy+" %");
-                emotionResult2.setText("\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t 사람 없음 : "+noperson+ "%");
+                emotionResult2.setText("\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+neutral+" % \n\n\t etc. : "+noperson+ "%");
 
                 eee.setVisibility(View.VISIBLE);
 

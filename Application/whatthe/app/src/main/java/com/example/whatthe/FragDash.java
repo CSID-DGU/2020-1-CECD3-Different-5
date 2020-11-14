@@ -404,7 +404,7 @@ public class FragDash extends Fragment {
                 mTextViewResult.setText("\t 총 공부 시간 : " + timeFormat.format(cal.getTime()) + "\n\n\t 졸음 시간 : " + blink + " 초 \n\n\t 시선 이탈 : " + gaze + " 회 \n\n\t 자세 불량 : " + slope + " 회 \n\n\t 산만한 태도 : " + hand + " 회");
                 emotionResult.setText("\t 분노 : "+angry+" % \n\n\t 역겨움 : "+disgusting+" % \n\n\t 공포 : "
                         +fearful+" % \n\n\t 행복 : "+happy+" %");
-                emotionResult2.setText("\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+nuetral+" % \n\n\t 사람 없음 : "+noperson+ "%");
+                emotionResult2.setText("\t 슬픔 : "+sad+" % \n\n\t 놀람 : "+surprising+" % \n\n\t 무표정 : "+nuetral+" % \n\n\t etc. : "+noperson+ "%");
 
                 eee.setVisibility(View.VISIBLE);
             }

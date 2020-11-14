@@ -88,7 +88,7 @@ public class CameraActivity extends AppCompatActivity
 
     //소켓
     private Socket socket;
-    private String ip = "172.30.1.21"; // IP
+    private String ip = "192.168.43.136"; // IP
     //private String ip = "192.168.113.14"; // IP
     private int port = 8000;
 
